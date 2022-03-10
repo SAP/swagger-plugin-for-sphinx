@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ name | default('OpenAPI Specification') }}</title>
+        <link href="{{css_uri}}" rel="stylesheet" type="text/css"/>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <div id="swagger-ui-container"></div>
+        <script src="{{present_uri}}"></script>
+        <script src="{{bundle_uri}}"></script>
+        <script>
+            config = {{options}}
+            config["dom_id"] = "#swagger-ui-container"
+            window.onload = function() {
+                window.ui = SwaggerUIBundle(config);
+            }
+        </script>
+    </body>
+</html>
