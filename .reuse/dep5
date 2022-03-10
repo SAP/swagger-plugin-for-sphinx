@@ -3,6 +3,6 @@ Upstream-Name: swagger-plugin-for-sphinx
 Upstream-Contact: kai.mueller01@sap.com
 Source: https://github.com/SAP/swagger-plugin-for-sphinx
 
-Files: sphinx_swagger
+Files: *
 Copyright: 2022 SAP SE or an SAP affiliate company and swagger-plugin-for-sphinx contributors
 License: Apache-2.0
