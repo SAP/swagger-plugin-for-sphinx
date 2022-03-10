@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, 3.10]
+        python-version: [3.7, 3.8, 3.9, "3.10"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,5 +22,7 @@ jobs:
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: 1.1.11
-      - name: View poetry --version
-        run: poetry --version
+      - name: Poetry install
+        run: poetry install
+      - name: run pre-commit
+        run: "poetry run pre-commit run --all"
