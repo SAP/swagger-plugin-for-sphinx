@@ -24,3 +24,5 @@ jobs:
           poetry-version: 1.1.11
       - name: View poetry --version
         run: poetry --version
+      - name: run pre-commit
+        run: "pre-commit run --all"
