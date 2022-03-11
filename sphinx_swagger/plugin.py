@@ -1,4 +1,7 @@
+"""Sphinx Swagger Plugin."""
+
 from __future__ import annotations
+from typing import Any, Iterator
 
 import urllib.request
 from os.path import abspath, dirname, join
@@ -11,7 +14,8 @@ import sphinx_swagger
 _HERE = abspath(dirname(__file__))
 
 
-def render(app: Sphinx):
+def render(app: Sphinx) -> Iterator[tuple[Any, ...]]:
+    """Render the swagger HTML pages."""
     for context in app.config.swagger:
         template_path = join(_HERE, "swagger.j2")
 
@@ -27,7 +31,10 @@ def render(app: Sphinx):
 
 
 def assets(app: Sphinx, exception: BaseException | None) -> None:
+    """Move the needed swagger file into the _static folder."""
     if exception:
+        return
+    if not app.builder:
         return
 
     urllib.request.urlretrieve(
@@ -44,7 +51,8 @@ def assets(app: Sphinx, exception: BaseException | None) -> None:
     )
 
 
-def setup(app: Sphinx) -> dict:
+def setup(app: Sphinx) -> dict[str, Any]:
+    """Setup this plugin."""
     app.add_config_value("swagger", [], "html")
     app.add_config_value(
         "swagger_present_uri",
