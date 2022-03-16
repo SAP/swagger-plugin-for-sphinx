@@ -1,28 +1,53 @@
-# SAP Repository Template
+# Swagger Plugin for Sphinx
 
-Default templates for SAP open source repositories, including LICENSE, .reuse/dep5, Code of Conduct, etc... All repositories on github.com/SAP will be created based on this template.
+This is handy plugin to bring [Swagger](https://swagger.io/) and [Sphinx](https://www.sphinx-doc.org/en/master/) together.
 
-## To-Do
+It is able to generate one or multiple swagger HTML pages with a custom configuration which host an OpenAPI specification.
 
-In case you are the maintainer of a new SAP open source project, these are the steps to do with the template files:
+## Install
 
-- Check if the default license (Apache 2.0) also applies to your project. A license change should only be required in exceptional cases. If this is the case, please change the [license file](LICENSE).
-- Enter the correct metadata for the REUSE tool. See our [wiki page](https://wiki.wdf.sap.corp/wiki/display/ospodocs/Using+the+Reuse+Tool+of+FSFE+for+Copyright+and+License+Information) for details how to do it. You can find an initial .reuse/dep5 file to build on. Please replace the parts inside the single angle quotation marks < > by the specific information for your repository and be sure to run the REUSE tool to validate that the metadata is correct.
-- Adjust the contribution guidelines (e.g. add coding style guidelines, pull request checklists, different license if needed etc.)
-- Add information about your project to this README (name, description, requirements etc). Especially take care for the <your-project> placeholders - those ones need to be replaced with your project name. See the sections below the horizontal line and [our guidelines on our wiki page](https://wiki.wdf.sap.corp/wiki/display/ospodocs/Guidelines+for+README.md+file) what is required and recommended.
-- Remove all content in this README above and including the horizontal line ;)
+Just run `pip install swagger-plugin-for-sphinx`
 
-***
 
-# Our new open source project
+## Usage
 
-## About this project
+First, add the plugin to the extensions list:
+```python
+extensions = ["sphinx_swagger.plugin"]
+```
 
-*Insert a short description of your project here...*
+Then add the main configuration for swagger:
+```python
+swagger_present_uri = ""
+swagger_bundle_uri = ""
+swagger_css_uri = ""
+```
+These correspond to the modules explained [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md).
+By default the latest release is used from [here](https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest).
 
-## Requirements and Setup
+As a last step, define the swagger configuration as followed:
+```python
+swagger = [
+    {
+        "name": "Service API",
+        "page": "openapi",
+        "options": {
+            "url": "openapi.yaml",
+        },
+    }
+]
+```
+Each item of the list will generate a new swagger HTML page.
+The `name` is the HTML page name and `page` defines the file name without an extension. This needs to be included in the TOC.
+The `options` are then used for the `SwaggerUIBundle` as defined [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md).
+Please don't specify the `dom_id` since it's hardcoded in the HTML page.
 
-*Insert a short description what is required to get your project running...*
+In the sphinx build, a HTML page is created and put into the `_static` directory of the build.
+
+If the specification is provided as a file, don't forget to copy it (e.g. by putting it into the `html_static_path`).
+
+To silence the warning `toctree contains reference to nonexisting document`,, just put a dummy file with the same name as `page` into the source folder.
+
 
 ## Support, Feedback, Contributing
 
