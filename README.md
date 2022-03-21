@@ -50,6 +50,12 @@ If the specification is provided as a file, don't forget to copy it (e.g. by put
 
 To silence the warning `toctree contains reference to nonexisting document`,, just put a dummy file with the same name as `page` into the source folder.
 
+## Build and Publish
+
+This project uses `poetry` as the dependency management and build tool.
+To publish a new release, follow these steps:
+* Add an entry in the changelog
+* Push a new tag like `vX.X.X` to trigger the release
 
 ## Support, Feedback, Contributing
 
