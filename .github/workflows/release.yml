@@ -10,15 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Setup python
       uses: actions/setup-python@v2
       with:
         python-version: "3.10"
-    - name: Install poetry
-      uses: abatilo/actions-poetry@v2.0.0
-      with:
-        poetry-version: 1.2.0b1
+    - name: Install Poetry
+      uses: snok/install-poetry@v1.3.1
     - name: poetry install
       run: poetry install
     - name: poetry build
