@@ -20,8 +20,10 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install Poetry
-        uses: snok/install-poetry@v1.3.1
+      - name: Install poetry
+        uses: abatilo/actions-poetry@v2.1.4
+        with:
+          poetry-version: 1.2.0b1
       - name: Poetry install
         run: poetry install
       - name: run pre-commit
