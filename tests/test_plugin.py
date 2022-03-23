@@ -1,13 +1,17 @@
-from __future__ import annotations
-from typing import Any, Callable, Iterator
+# pylint: disable=missing-function-docstring,redefined-outer-name,too-many-arguments
 
-import pytest
-from sphinx.application import Sphinx
-from pathlib import Path
-from textwrap import dedent
-from pytest_mock import MockerFixture
+"""Tests."""
+
+from __future__ import annotations
 
 import urllib.request
+from pathlib import Path
+from textwrap import dedent
+from typing import Any, Callable
+
+import pytest
+from pytest_mock import MockerFixture
+from sphinx.application import Sphinx
 
 SphinxRunner = Callable[..., None]
 
@@ -81,24 +85,25 @@ def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     with open(build / "openapi.html", encoding="utf-8") as file:
         html = file.read()
 
+    base_url = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest"
     expected = dedent(
-        """<!DOCTYPE html>
+        f"""<!DOCTYPE html>
 <html>
     <head>
         <title>Service API</title>
-        <link href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui.css" rel="stylesheet" type="text/css"/>
+        <link href="{base_url}/swagger-ui.css" rel="stylesheet" type="text/css"/>
         <meta charset="utf-8"/>
     </head>
     <body>
         <div id="swagger-ui-container"></div>
-        <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-standalone-preset.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-bundle.js"></script>
+        <script src="{base_url}/swagger-ui-standalone-preset.js"></script>
+        <script src="{base_url}/swagger-ui-bundle.js"></script>
         <script>
-            config = {'url': 'openapi.yaml'}
+            config = {{'url': 'openapi.yaml'}}
             config["dom_id"] = "#swagger-ui-container"
-            window.onload = function() {
+            window.onload = function() {{
                 window.ui = SwaggerUIBundle(config);
-            }
+            }}
         </script>
     </body>
 </html>"""

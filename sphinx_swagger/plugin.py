@@ -1,10 +1,10 @@
 """Sphinx Swagger Plugin."""
 
 from __future__ import annotations
-from typing import Any, Iterator
 
 import urllib.request
 from os.path import abspath, dirname, join
+from typing import Any, Iterator
 
 import jinja2
 from sphinx.application import Sphinx
