@@ -20,9 +20,12 @@ repos:
         pass_filenames: false
         args:
           - sphinx_swagger/
+          - tests/
         additional_dependencies:
           - sphinx
           - jinja2
+          - pytest
+          - pytest-mock
   - repo: local
     hooks:
       - id: pylint
