@@ -23,7 +23,7 @@ repos:
       - id: mypy
         pass_filenames: false
         args:
-          - sphinx_swagger/
+          - swagger_plugin_for_sphinx/
           - tests/
         additional_dependencies:
           - sphinx

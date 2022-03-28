@@ -9,7 +9,7 @@ from typing import Any, Iterator
 import jinja2
 from sphinx.application import Sphinx
 
-import sphinx_swagger
+import swagger_plugin_for_sphinx
 
 _HERE = abspath(dirname(__file__))
 
@@ -73,4 +73,7 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.connect("html-collect-pages", render)
     app.connect("build-finished", assets)
 
-    return {"version": sphinx_swagger.__version__, "parallel_read_safe": True}
+    return {
+        "version": swagger_plugin_for_sphinx.__version__,
+        "parallel_read_safe": True,
+    }

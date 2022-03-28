@@ -28,7 +28,7 @@ classifiers = [
     "Typing :: Typed"
 ]
 packages  = [
-    { include = "sphinx_swagger" }
+    { include = "swagger_plugin_for_sphinx" }
 ]
 [tool.poetry.urls]
 "Issue Tracker" = "https://github.com/SAP/swagger-plugin-for-sphinx/issues"
