@@ -4,6 +4,7 @@ version = "1.0.0b0"
 description = "Sphinx plugin which renders a OpenAPI specification with Swagger"
 authors = ["Kai Mueller <kai.mueller01@sap.com>"]
 license = "Apache-2.0"
+readme = "README.md"
 repository = "https://github.com/SAP/swagger-plugin-for-sphinx"
 documentation = "https://github.com/SAP/swagger-plugin-for-sphinx"
 homepage = "https://github.com/SAP/swagger-plugin-for-sphinx"
