@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sphinx-full-swaggerui"
-version = "1.0.0b0"
+version = "1.0.0"
 description = "Sphinx plugin which renders a OpenAPI specification with Swagger"
 authors = ["Kai Mueller <kai.mueller01@sap.com>"]
 license = "Apache-2.0"
