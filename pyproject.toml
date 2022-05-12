@@ -61,21 +61,11 @@ profile = "black"
 add_imports = ["from __future__ import annotations"]
 
 [tool.mypy]
-# what needs to be typed
-disallow_incomplete_defs = true
-disallow_untyped_calls = false
-disallow_untyped_defs = true
 # main config
-no_implicit_optional = true
-strict_equality = true
 strict_optional = true
 warn_incomplete_stub = true
 warn_no_return = true
-warn_redundant_casts = true
-warn_return_any = false
 warn_unreachable = true
-warn_unused_configs = true
-warn_unused_ignores = true
 strict = true
 # output
 pretty = true
