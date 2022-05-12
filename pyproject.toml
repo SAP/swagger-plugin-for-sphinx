@@ -47,6 +47,10 @@ pytest-mock = "==3.7.0"
 coverage = {version = "==6.3.2", extras = ["toml"]}
 diff-cover = {version = "==6.4.4", extras = ["toml"]}
 pytest-cov = "==3.0.0"
+black = "==22.3.0"
+isort = "==5.10.1"
+flake8  = "==4.0.1"
+mypy = "==0.950"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
