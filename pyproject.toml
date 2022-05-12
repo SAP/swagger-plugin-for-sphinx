@@ -10,7 +10,7 @@ documentation = "https://github.com/SAP/swagger-plugin-for-sphinx"
 homepage = "https://github.com/SAP/swagger-plugin-for-sphinx"
 keywords = ["sphinx", "swagger", "plugin", "openapi"]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Plugins",
     "Framework :: Sphinx :: Extension",
     "Intended Audience :: Developers",
