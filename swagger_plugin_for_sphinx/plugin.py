@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import urllib.request
-from os.path import abspath, dirname, join
+from pathlib import Path
 from typing import Any, Iterator
 
 import jinja2
@@ -11,15 +11,15 @@ from sphinx.application import Sphinx
 
 import swagger_plugin_for_sphinx
 
-_HERE = abspath(dirname(__file__))
+_HERE = Path(__file__).parent.resolve()
 
 
 def render(app: Sphinx) -> Iterator[tuple[Any, ...]]:
     """Render the swagger HTML pages."""
     for context in app.config.swagger:
-        template_path = join(_HERE, "swagger.j2")
+        template_path = _HERE / "swagger.j2"
 
-        with open(template_path, encoding="utf-8") as handle:
+        with template_path.open(encoding="utf-8") as handle:
             template = jinja2.Template(handle.read())
 
         context.setdefault("options", {})
@@ -37,17 +37,16 @@ def assets(app: Sphinx, exception: BaseException | None) -> None:
     if not app.builder:
         return
 
+    static_folder = Path(app.builder.outdir) / "_static"
     urllib.request.urlretrieve(
         app.config.swagger_present_uri,
-        join(app.builder.outdir, "_static", "swagger-ui-standalone-preset.js"),
+        str(static_folder / "swagger-ui-standalone-preset.js"),
     )
     urllib.request.urlretrieve(
-        app.config.swagger_bundle_uri,
-        join(app.builder.outdir, "_static", "swagger-ui-bundle.js"),
+        app.config.swagger_bundle_uri, str(static_folder / "swagger-ui-bundle.js")
     )
     urllib.request.urlretrieve(
-        app.config.swagger_css_uri,
-        join(app.builder.outdir, "_static", "swagger-ui.css"),
+        app.config.swagger_css_uri, str(static_folder / "swagger-ui.css")
     )
 
 
