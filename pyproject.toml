@@ -35,22 +35,22 @@ packages  = [
 "Changelog" = "https://github.com/SAP/swagger-plugin-for-sphinx/blob/main/CHANGELOG.md"
 
 [tool.poetry.dependencies]
-python = ">=3.7,<4.0"
-sphinx = "~=4.0"
+python = ">=3.7.2,<4.0"
+sphinx = ">=4,<6"
 jinja2 = "~=3.0"
 
 [tool.poetry.dev-dependencies]
-pre-commit = "==2.17.0"
-pylint = "==2.12.2"
-pytest = "==7.1.1"
-pytest-mock = "==3.7.0"
-coverage = {version = "==6.3.2", extras = ["toml"]}
-diff-cover = {version = "==6.4.4", extras = ["toml"]}
+pre-commit = "==2.20.0"
+pylint = "==2.14.5"
+pytest = "==7.1.2"
+pytest-mock = "==3.8.2"
+coverage = {version = "==6.4.2", extras = ["toml"]}
+diff-cover = {version = "==6.5.1", extras = ["toml"]}
 pytest-cov = "==3.0.0"
-black = "==22.3.0"
+black = "==22.6.0"
 isort = "==5.10.1"
-flake8  = "==4.0.1"
-mypy = "==0.950"
+flake8  = "==5.0.3"
+mypy = "==0.971"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
