@@ -20,15 +20,11 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install poetry
-        uses: abatilo/actions-poetry@v2.1.4
-        with:
-          poetry-version: 1.2.0b1
-      - name: Poetry install
-        run: poetry install
+      - name: Install project
+        run: pip install -e .[dev]
       - name: run pre-commit
-        run: "poetry run pre-commit run --all"
+        run: "pre-commit run --all"
       - name: run tests (with coverage)
-        run: "poetry run pytest --cov swagger_plugin_for_sphinx --cov-report html --cov-report xml tests/"
+        run: "pytest --cov swagger_plugin_for_sphinx --cov-report html --cov-report xml tests/"
       - name: run diff-cover
-        run: "poetry run diff-cover --config-file pyproject.toml coverage.xml"
+        run: "diff-cover --config-file pyproject.toml coverage.xml"

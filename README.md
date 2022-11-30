@@ -53,7 +53,7 @@ To silence the warning `toctree contains reference to nonexisting document`,, ju
 
 ## Build and Publish
 
-This project uses `poetry` as the dependency management and build tool.
+This project uses `setuptools` as the dependency management and build tool.
 To publish a new release, follow these steps:
 * Update the version in the `pyproject.toml`
 * Add an entry in the changelog
