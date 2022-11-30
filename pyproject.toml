@@ -1,13 +1,13 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "swagger-plugin-for-sphinx"
 version = "1.2.0"
 description = "Sphinx plugin which renders a OpenAPI specification with Swagger"
-authors = ["Kai Mueller <kai.mueller01@sap.com>"]
-license = "Apache-2.0"
+authors = [{ name = "Kai Mueller", email = "kai.mueller01@sap.com"}]
 readme = "README.md"
-repository = "https://github.com/SAP/swagger-plugin-for-sphinx"
-documentation = "https://github.com/SAP/swagger-plugin-for-sphinx"
-homepage = "https://github.com/SAP/swagger-plugin-for-sphinx"
 keywords = ["sphinx", "swagger", "plugin", "openapi"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -27,34 +27,39 @@ classifiers = [
     "Topic :: Documentation :: Sphinx",
     "Typing :: Typed"
 ]
-packages  = [
-    { include = "swagger_plugin_for_sphinx" }
+requires-python = ">=3.7.2,<4.0"
+dependencies = [
+    "sphinx>=4,<6",
+    "jinja2~=3.0",
 ]
-[tool.poetry.urls]
+
+[project.license]
+text = "Apache-2.0"
+
+[project.urls]
 "Issue Tracker" = "https://github.com/SAP/swagger-plugin-for-sphinx/issues"
 "Changelog" = "https://github.com/SAP/swagger-plugin-for-sphinx/blob/main/CHANGELOG.md"
 
-[tool.poetry.dependencies]
-python = ">=3.7.2,<4.0"
-sphinx = ">=4,<6"
-jinja2 = "~=3.0"
+[project.optional-dependencies]
+dev = [
+    "pre-commit==2.20.0",
+    "pylint==2.14.5",
+    "pytest==7.1.2",
+    "pytest-mock==3.8.2",
+    "coverage[toml]==6.4.2",
+    "diff-cover[toml]==6.5.1",
+    "pytest-cov==3.0.0",
+    "black==22.6.0",
+    "isort==5.10.1",
+    "flake8==5.0.3",
+    "mypy==0.971",
+]
 
-[tool.poetry.dev-dependencies]
-pre-commit = "==2.20.0"
-pylint = "==2.14.5"
-pytest = "==7.1.2"
-pytest-mock = "==3.8.2"
-coverage = {version = "==6.4.2", extras = ["toml"]}
-diff-cover = {version = "==6.5.1", extras = ["toml"]}
-pytest-cov = "==3.0.0"
-black = "==22.6.0"
-isort = "==5.10.1"
-flake8  = "==5.0.3"
-mypy = "==0.971"
+[tool.setuptools.packages.find]
+include = ["swagger_plugin_for_sphinx"]
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools.package-data]
+swagger_plugin_for_sphinx = ["py.typed", "*.j2"]
 
 [tool.isort]
 profile = "black"
