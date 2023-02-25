@@ -19,17 +19,17 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Topic :: Documentation",
     "Topic :: Documentation :: Sphinx",
     "Typing :: Typed"
 ]
-requires-python = ">=3.7.2,<4.0"
+requires-python = ">=3.8,<4"
 dependencies = [
-    "sphinx>=4,<6",
+    "sphinx~=6.0",
     "jinja2~=3.0",
 ]
 
@@ -42,17 +42,17 @@ text = "Apache-2.0"
 
 [project.optional-dependencies]
 dev = [
-    "pre-commit==2.20.0",
-    "pylint==2.15.7",
-    "pytest==7.2.0",
+    "pre-commit==3.1.0",
+    "pylint==2.16.2",
+    "pytest==7.2.1",
     "pytest-mock==3.10.0",
-    "coverage[toml]==6.5.0",
-    "diff-cover[toml]==7.1.2",
+    "coverage==7.2.0",
+    "diff-cover==7.5.0",
     "pytest-cov==4.0.0",
-    "black==22.10.0",
-    "isort==5.10.1",
-    "flake8==5.0.4",
-    "mypy==0.991",
+    "black==23.1.0",
+    "isort==5.12.0",
+    "flake8==6.0.0",
+    "mypy==1.0.1",
 ]
 
 [tool.setuptools.packages.find]
