@@ -6,4 +6,5 @@ select =
     F,  # flake8-pyflakes
     W,  # flake8-pycodestyle
 ignore=
-    W503,E203,  # conflict with black formatter
+    # conflict with black formatter
+    W503,E203,

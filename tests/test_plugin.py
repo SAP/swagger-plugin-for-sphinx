@@ -62,7 +62,6 @@ def test_run_empty(sphinx_runner: SphinxRunner) -> None:
 
 
 def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
-
     sphinx_runner(
         swagger=[
             {
