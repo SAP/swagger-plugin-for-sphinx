@@ -2,4 +2,6 @@
 
 from __future__ import annotations
 
-__version__ = "0.1.0"
+from swagger_plugin_for_sphinx._plugin import setup
+
+__all__ = ("setup",)

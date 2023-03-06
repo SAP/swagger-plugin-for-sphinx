@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import urllib.request
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any, Iterator
 
 import jinja2
 from sphinx.application import Sphinx
-
-import swagger_plugin_for_sphinx
 
 _HERE = Path(__file__).parent.resolve()
 
@@ -73,6 +72,6 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.connect("build-finished", assets)
 
     return {
-        "version": swagger_plugin_for_sphinx.__version__,
+        "version": version("swagger_plugin_for_sphinx"),
         "parallel_read_safe": True,
     }
