@@ -16,7 +16,7 @@ Just run `pip install swagger-plugin-for-sphinx`
 
 First, add the plugin to the extensions list:
 ```python
-extensions = ["swagger_plugin_for_sphinx.plugin"]
+extensions = ["swagger_plugin_for_sphinx"]
 ```
 
 Then add the main configuration for swagger:

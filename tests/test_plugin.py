@@ -29,7 +29,7 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
         swagger_bundle_uri: str | None = None,
         swagger_css_uri: str | None = None,
     ) -> None:
-        code = ["extensions = ['swagger_plugin_for_sphinx.plugin']"]
+        code = ["extensions = ['swagger_plugin_for_sphinx']"]
         if swagger:
             code.append(f"swagger = {swagger}")
         if swagger_present_uri:

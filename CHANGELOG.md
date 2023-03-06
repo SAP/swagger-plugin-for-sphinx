@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.0
+
+* Make ``swagger_plugin_for_sphinx.plugin`` private
+* Remove ``swagger_plugin_for_sphinx.__version__``
+* The module can now be used as the extension name, so instead of using
+  ``swagger_plugin_for_sphinx.plugin`` use ``swagger_plugin_for_sphinx``
+
 ## 2.0.0
 
 * Support sphinx 6.x
