@@ -3,9 +3,9 @@
 
 # Swagger Plugin for Sphinx
 
-This is handy plugin to bring [Swagger](https://swagger.io/) and [Sphinx](https://www.sphinx-doc.org/en/master/) together.
+This is a handy plugin to bring [Swagger](https://swagger.io/) and [Sphinx](https://www.sphinx-doc.org/en/master/) together.
 
-It is able to generate one or multiple swagger HTML pages with a custom configuration which host an OpenAPI specification.
+It can generate one or multiple swagger HTML pages with a custom configuration that hosts an OpenAPI specification.
 
 ## Install
 
@@ -26,9 +26,9 @@ swagger_bundle_uri = ""
 swagger_css_uri = ""
 ```
 These correspond to the modules explained [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md).
-By default the latest release is used from [here](https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest).
+By default, the latest release is used from [here](https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest).
 
-As a last step, define the swagger configuration as followed:
+As a last step, define the swagger configuration as follows:
 ```python
 swagger = [
     {
@@ -40,16 +40,16 @@ swagger = [
     }
 ]
 ```
-Each item of the list will generate a new swagger HTML page.
+Each item on the list will generate a new swagger HTML page.
 The `name` is the HTML page name and `page` defines the file name without an extension. This needs to be included in the TOC.
 The `options` are then used for the `SwaggerUIBundle` as defined [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md).
 Please don't specify the `dom_id` since it's hardcoded in the HTML page.
 
-In the sphinx build, a HTML page is created and put into the `_static` directory of the build.
+In the sphinx build, an HTML page is created and put into the `_static` directory of the build.
 
-If the specification is provided as a file, don't forget to copy it (e.g. by putting it into the `html_static_path`).
+If the specification is provided as a file, don't forget to copy it (e.g., by putting it into the `html_static_path`).
 
-To silence the warning `toctree contains reference to nonexisting document`,, just put a dummy file with the same name as `page` into the source folder.
+To silence the warning `toctree contains reference to nonexisting document`, just put a dummy file with the same name as `page` into the source folder.
 
 ## Build and Publish
 
@@ -61,7 +61,7 @@ To publish a new release, follow these steps:
 
 ## Support, Feedback, Contributing
 
-This project is open to feature requests/suggestions, bug reports etc. via [GitHub issues](https://github.com/SAP/<your-project>/issues). Contribution and feedback are encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
+This project is open to feature requests/suggestions, bug reports etc., via [GitHub issues](https://github.com/SAP/<your-project>/issues). Contribution and feedback are encouraged and always welcome. For more information about how to contribute, the project structure, as well as additional contribution information, see our [Contribution Guidelines](CONTRIBUTING.md).
 
 ## Code of Conduct
 
