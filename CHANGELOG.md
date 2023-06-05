@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.1.0
+
+* Support Sphinx 7
+
 ## 3.0.0
 
 * Make ``swagger_plugin_for_sphinx.plugin`` private
