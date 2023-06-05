@@ -1,5 +1,8 @@
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -23,3 +26,13 @@ jobs:
       run: python -m build -o dist/ .
     - name: Upload wheel
       run: twine upload -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} --non-interactive "dist/*"
+    - name: Determine version
+      run: |
+        tag="${GITHUB_REF#refs/*/}"
+        version="${tag:1}"
+        echo "RELEASE_VERSION=${version}" >> $GITHUB_ENV
+    - name: Release on GitHub
+      uses: softprops/action-gh-release@v1
+      with:
+        files: dist/*
+        name: Version ${{ env.RELEASE_VERSION }}
