@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "swagger-plugin-for-sphinx"
-version = "3.0.0"
+version = "3.1.0"
 description = "Sphinx plugin which renders a OpenAPI specification with Swagger"
 authors = [{ name = "Kai Mueller", email = "kai.mueller01@sap.com"}]
 readme = "README.md"
