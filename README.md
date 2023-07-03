@@ -14,10 +14,14 @@ Just run `pip install swagger-plugin-for-sphinx`
 
 ## Usage
 
+### Enable the plugin
+
 First, add the plugin to the extensions list:
 ```python
 extensions = ["swagger_plugin_for_sphinx"]
 ```
+
+### Global configuration
 
 Then add the main configuration for swagger:
 ```python
@@ -28,12 +32,15 @@ swagger_css_uri = ""
 These correspond to the modules explained [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md).
 By default, the latest release is used from [here](https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest).
 
+
+### Standalone page
 As a last step, define the swagger configuration as follows:
 ```python
 swagger = [
     {
         "name": "Service API",
         "page": "openapi",
+        "id": "my-page",
         "options": {
             "url": "openapi.yaml",
         },
@@ -44,12 +51,21 @@ Each item on the list will generate a new swagger HTML page.
 The `name` is the HTML page name and `page` defines the file name without an extension. This needs to be included in the TOC.
 The `options` are then used for the `SwaggerUIBundle` as defined [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md).
 Please don't specify the `dom_id` since it's hardcoded in the HTML page.
-
-In the sphinx build, an HTML page is created and put into the `_static` directory of the build.
-
 If the specification is provided as a file, don't forget to copy it (e.g., by putting it into the `html_static_path`).
-
 To silence the warning `toctree contains reference to nonexisting document`, just put a dummy file with the same name as `page` into the source folder.
+
+## Inline swagger page
+To include a swagger page into a sphinx page use the directive ``inline-swagger``:
+
+```rst
+.. inline-swagger::
+    :id: my-page
+```
+
+The ``id`` links to an existing configuration in ``conf.py`` as shows above.
+In this case, the configuration ``page`` will be ignored.
+Behind the scenes, a swagger HTML page is generated and then inserted using the ``.. raw::``
+directive.
 
 ## Build and Publish
 

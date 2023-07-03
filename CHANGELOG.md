@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0
+
+* Support for inline swagger pages
+
 ## 3.1.0
 
 * Support Sphinx 7
