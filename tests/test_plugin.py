@@ -111,6 +111,34 @@ def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     assert expected == html
 
 
+def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
+    docs = tmp_path / "docs"
+    api_file = docs / "api.rst"
+    api_file.write_text(
+        "API\n===\n\n.. inline-swagger::\n    :id: myid\n", encoding="utf-8"
+    )
+
+    sphinx_runner(
+        swagger=[
+            {"name": "API1", "page": "openapi", "options": {"url": "openapi.yaml"}},
+            {"name": "API2", "id": "myid", "options": {"url": "openapi.yaml"}},
+        ]
+    )
+
+    build = tmp_path / "build"
+    static = build / "_static"
+
+    assert (static / "swagger-ui.css").is_file()
+    assert (static / "swagger-ui-bundle.js").is_file()
+    assert (static / "swagger-ui-standalone-preset.js").is_file()
+
+    with open(build / "api.html", encoding="utf-8") as file:
+        html = file.read()
+
+    assert '<script src="_static/sphinx_highlight.js">' in html
+    assert "window.ui = SwaggerUIBundle(config);" in html
+
+
 @pytest.mark.parametrize(
     "present_uri,bundle_uri,css_uri,expected_present_uri,expected_bundle_uri,expected_css_uri",
     [
