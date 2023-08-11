@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.0
+
+* Support python 3.12
+
 ## 3.2.0
 
 * Support for inline swagger pages

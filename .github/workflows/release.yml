@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: "3.11"
     - name: Install project
-      run: pip install -e .[dev]
+      run: pip install -e .
     - name: Install libraries
       run: pip install -U build twine
     - name: Create wheel
