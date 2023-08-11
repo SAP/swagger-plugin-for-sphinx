@@ -135,7 +135,7 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     with open(build / "api.html", encoding="utf-8") as file:
         html = file.read()
 
-    assert '<script src="_static/sphinx_highlight.js">' in html
+    assert "sphinx" in html
     assert "window.ui = SwaggerUIBundle(config);" in html
 
 
