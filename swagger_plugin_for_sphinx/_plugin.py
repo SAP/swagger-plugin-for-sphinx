@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import urllib.request
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any, Iterator
@@ -75,26 +74,6 @@ def render(app: Sphinx) -> Iterator[tuple[Any, ...]]:
         yield context["page"], context, template
 
 
-def assets(app: Sphinx, exception: BaseException | None) -> None:
-    """Move the needed swagger file into the _static folder."""
-    if exception:
-        return
-    if not app.builder:
-        return
-
-    static_folder = Path(app.builder.outdir) / "_static"
-    urllib.request.urlretrieve(
-        app.config.swagger_present_uri,
-        str(static_folder / "swagger-ui-standalone-preset.js"),
-    )
-    urllib.request.urlretrieve(
-        app.config.swagger_bundle_uri, str(static_folder / "swagger-ui-bundle.js")
-    )
-    urllib.request.urlretrieve(
-        app.config.swagger_css_uri, str(static_folder / "swagger-ui.css")
-    )
-
-
 def setup(app: Sphinx) -> dict[str, Any]:
     """Setup this plugin."""
     app.add_config_value("swagger", [], "html")
@@ -115,7 +94,6 @@ def setup(app: Sphinx) -> dict[str, Any]:
     )
 
     app.connect("html-collect-pages", render)
-    app.connect("build-finished", assets)
 
     app.add_directive("inline-swagger", InlineSwaggerDirective)
 

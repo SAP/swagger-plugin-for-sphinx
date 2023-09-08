@@ -4,7 +4,6 @@
 
 from __future__ import annotations
 
-import urllib.request
 from pathlib import Path
 from textwrap import dedent
 from typing import Any, Callable
@@ -75,12 +74,6 @@ def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     )
 
     build = tmp_path / "build"
-    static = build / "_static"
-
-    assert (static / "swagger-ui.css").is_file()
-    assert (static / "swagger-ui-bundle.js").is_file()
-    assert (static / "swagger-ui-standalone-preset.js").is_file()
-
     with open(build / "openapi.html", encoding="utf-8") as file:
         html = file.read()
 
@@ -126,12 +119,6 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     )
 
     build = tmp_path / "build"
-    static = build / "_static"
-
-    assert (static / "swagger-ui.css").is_file()
-    assert (static / "swagger-ui-bundle.js").is_file()
-    assert (static / "swagger-ui-standalone-preset.js").is_file()
-
     with open(build / "api.html", encoding="utf-8") as file:
         html = file.read()
 
@@ -171,15 +158,44 @@ def test_custom_urls(
     expected_bundle_uri: str,
     expected_css_uri: str,
 ) -> None:
-    urlretrieve = mocker.patch.object(urllib.request, "urlretrieve")
+    sphinx_runner(
+        [
+            {
+                "name": "Service API",
+                "page": "openapi",
+                "options": {"url": "openapi.yaml"},
+            }
+        ],
+        present_uri,
+        bundle_uri,
+        css_uri,
+    )
 
-    sphinx_runner([], present_uri, bundle_uri, css_uri)
+    build = tmp_path / "build"
+    with open(build / "openapi.html", encoding="utf-8") as file:
+        html = file.read()
 
-    base_path = str(tmp_path) + "/build/_static"
-    assert urlretrieve.call_args_list == [
-        mocker.call(
-            expected_present_uri, f"{base_path}/swagger-ui-standalone-preset.js"
-        ),
-        mocker.call(expected_bundle_uri, f"{base_path}/swagger-ui-bundle.js"),
-        mocker.call(expected_css_uri, f"{base_path}/swagger-ui.css"),
-    ]
+    expected = dedent(
+        f"""<!DOCTYPE html>
+<html>
+    <head>
+        <title>Service API</title>
+        <link href="{expected_css_uri}" rel="stylesheet" type="text/css"/>
+        <meta charset="utf-8"/>
+    </head>
+    <body>
+        <div id="swagger-ui-container"></div>
+        <script src="{expected_present_uri}"></script>
+        <script src="{expected_bundle_uri}"></script>
+        <script>
+            config = {{'url': 'openapi.yaml'}}
+            config["dom_id"] = "#swagger-ui-container"
+            window.onload = function() {{
+                window.ui = SwaggerUIBundle(config);
+            }}
+        </script>
+    </body>
+</html>"""
+    )
+
+    assert expected == html

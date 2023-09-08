@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.4.0
+
+* Official support file paths for `swagger_present_uri`, `swagger_bundle_uri` and `swagger_css_uri`
+* Remove an unnecessary download of `swagger_present_uri`, `swagger_bundle_uri` and `swagger_css_uri`
+
 ## 3.3.0
 
 * Support python 3.12
