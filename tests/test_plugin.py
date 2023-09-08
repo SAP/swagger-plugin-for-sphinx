@@ -9,7 +9,6 @@ from textwrap import dedent
 from typing import Any, Callable
 
 import pytest
-from pytest_mock import MockerFixture
 from sphinx.application import Sphinx
 
 SphinxRunner = Callable[..., None]
@@ -148,7 +147,6 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     ],
 )
 def test_custom_urls(
-    mocker: MockerFixture,
     tmp_path: Path,
     sphinx_runner: SphinxRunner,
     present_uri: str | None,
