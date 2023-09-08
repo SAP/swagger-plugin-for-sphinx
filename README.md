@@ -32,6 +32,9 @@ swagger_css_uri = ""
 These correspond to the modules explained [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md).
 By default, the latest release is used from [here](https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest).
 
+Note, that also file paths can be used.
+First, specify your paths in the `html_static_path` config of sphinx.
+Then customize the corresponding uri settings like `_static/<myfile>`
 
 ### Standalone page
 As a last step, define the swagger configuration as follows:
