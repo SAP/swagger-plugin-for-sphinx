@@ -45,7 +45,7 @@ text = "Apache-2.0"
 [project.optional-dependencies]
 dev = [
     "pre-commit==3.3.3",
-    "pylint==2.17.5",
+    "pylint==3.0.2",
     "black==23.11.0",
     "isort==5.12.0",
     "flake8==6.1.0",
