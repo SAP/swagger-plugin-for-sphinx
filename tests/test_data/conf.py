@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name,redefined-builtin
+# pylint: disable=invalid-name
 
 """Configuration for sphinx."""
 

@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 
 @pytest.mark.integration
 def test() -> None:
+    """Test a basic scenario."""
     shutil.rmtree("tests/test_data/_build", ignore_errors=True)
     subprocess.run(
         ["sphinx-build", "tests/test_data", "tests/test_data/_build"], check=True
@@ -21,7 +22,7 @@ def test() -> None:
     options.add_argument("--ignore-certificate-errors")
 
     with webdriver.Remote(
-        f"http://localhost:4444", options=options
+        "http://localhost:4444", options=options
     ) as browser, subprocess.Popen(
         [
             "python",
