@@ -42,16 +42,16 @@ text = "Apache-2.0"
 dev = [
     "pre-commit==3.6.0",
     "pylint==3.0.3",
-    "black==23.12.1",
+    "black==24.1.1",
     "isort==5.13.2",
     "flake8==7.0.0",
     "mypy==1.8.0",
-    "types-docutils==0.20.0.20240106",
+    "types-docutils==0.20.0.20240126",
 ]
 test = [
-    "pytest==7.4.4",
-    "coverage==7.4.0",
-    "diff-cover==8.0.2",
+    "pytest==8.0.0",
+    "coverage==7.4.1",
+    "diff-cover==8.0.3",
     "pytest-cov==4.1.0",
 ]
 
