@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import shutil
 import subprocess
 
@@ -20,10 +19,9 @@ def test() -> None:
 
     options = webdriver.ChromeOptions()
     options.add_argument("--ignore-certificate-errors")
-    selenium_host = os.environ["SELENIUM"]
 
     with webdriver.Remote(
-        f"{selenium_host}:4444", options=options
+        f"http://localhost:4444", options=options
     ) as browser, subprocess.Popen(
         [
             "python",

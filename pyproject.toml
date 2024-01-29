@@ -118,7 +118,7 @@ branch = true
 include_untracked = true
 fail_under = 90
 
-[tool.pytest]
+[tool.pytest.ini_options]
 markers = ["integration: integration tests"]
 xfail_strict = true
 addopts = "--strict-markers"
