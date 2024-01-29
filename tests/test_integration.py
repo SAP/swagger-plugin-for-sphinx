@@ -22,7 +22,7 @@ def test() -> None:
     options.add_argument("--ignore-certificate-errors")
 
     with webdriver.Remote(
-        "http://selenium:4444", options=options
+        "localhost:4444", options=options
     ) as browser, subprocess.Popen(
         [
             "python",
