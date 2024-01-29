@@ -2,8 +2,9 @@
 
 """Configuration for sphinx."""
 
-# -- Project information -----------------------------------------------------
+from __future__ import annotations
 
+# -- Project information -----------------------------------------------------
 project = "Integration Test Documentation"
 release = "1.0.0"
 version = "1.0.0"
