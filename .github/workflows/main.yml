@@ -39,7 +39,7 @@ jobs:
       - name: Install sphinx
         run: pip install sphinx==${{ matrix.sphinx-version }}
       - name: setup selenium container
-        run: docker run -p 4444:4444 --net host --shm-size="2g" selenium/standalone-chrome:120.0
+        run: docker run -d -p 4444:4444 --net host --shm-size="2g" selenium/standalone-chrome:120.0
       - name: run tests (with coverage)
         run: "pytest --cov swagger_plugin_for_sphinx --cov-report html --cov-report xml tests/"
       - name: run diff-cover
