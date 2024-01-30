@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import shutil
 import subprocess
+import time
 
 import pytest
 from selenium import webdriver
@@ -32,6 +33,7 @@ def test() -> None:
             "tests/test_data/_build/",
         ]
     ) as popen:
+        time.sleep(5)
         browser.get("http://localhost:8000/openapi.html")
         title = browser.find_element(By.CLASS_NAME, "title")
         assert title.text.split("\n")[0] == "Swagger Petstore"

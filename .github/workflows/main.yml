@@ -39,7 +39,7 @@ jobs:
       - name: Install sphinx
         run: pip install sphinx==${{ matrix.sphinx-version }}
       - name: setup selenium container
-        run: docker run -d -p 4444:4444 --net host --shm-size="2g" selenium/standalone-chrome:120.0
+        run: docker run -d -p 4444:4444 -p 7900:7900 --network host --shm-size="2g" selenium/standalone-chrome:120.0
       - name: Wait for selenium container
         run: "while ! curl -sSL http://localhost:4444/wd/hub/status | jq .value.ready | grep true; do sleep 1; done"
       - name: run tests (with coverage)
