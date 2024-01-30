@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "swagger-plugin-for-sphinx"
 version = "3.4.0"
 description = "Sphinx plugin which renders a OpenAPI specification with Swagger"
-authors = [{ name = "Kai Mueller", email = "kai.mueller01@sap.com"}]
+authors = [{ name = "Kai Mueller", email = "kai.mueller01@sap.com" }]
 readme = "README.md"
 keywords = ["sphinx", "swagger", "plugin", "openapi"]
 classifiers = [
@@ -26,14 +26,10 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Documentation",
     "Topic :: Documentation :: Sphinx",
-    "Typing :: Typed"
+    "Typing :: Typed",
 ]
 requires-python = ">=3.8,<4"
-dependencies = [
-    "sphinx>=6.0,<8",
-    "jinja2~=3.0",
-    "docutils",
-]
+dependencies = ["sphinx>=6.0,<8", "jinja2~=3.0", "docutils"]
 
 [project.license]
 text = "Apache-2.0"
@@ -50,13 +46,14 @@ dev = [
     "isort==5.13.2",
     "flake8==7.0.0",
     "mypy==1.8.0",
-    "types-docutils==0.20.0.20240126"
+    "types-docutils==0.20.0.20240126",
 ]
 test = [
     "pytest==8.0.0",
     "coverage==7.4.1",
     "diff-cover==8.0.3",
     "pytest-cov==4.1.0",
+    "selenium==4.17.2",
 ]
 
 [tool.setuptools.packages.find]
@@ -120,3 +117,8 @@ branch = true
 [tool.diff_cover]
 include_untracked = true
 fail_under = 90
+
+[tool.pytest.ini_options]
+markers = ["integration: integration tests"]
+xfail_strict = true
+addopts = "--strict-markers"

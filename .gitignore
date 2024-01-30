@@ -139,3 +139,5 @@ cython_debug/
 # Ignore all local history of files
 .history
 .ionide
+
+tests/test_data/_build/
