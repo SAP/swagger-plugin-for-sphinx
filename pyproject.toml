@@ -49,7 +49,7 @@ dev = [
     "types-docutils==0.20.0.20240201",
 ]
 test = [
-    "pytest==8.0.0",
+    "pytest==8.0.1",
     "coverage==7.4.1",
     "diff-cover==8.0.3",
     "pytest-cov==4.1.0",
