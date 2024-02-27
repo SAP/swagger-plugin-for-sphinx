@@ -11,6 +11,10 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+      contents: write
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -21,11 +25,11 @@ jobs:
     - name: Install project
       run: pip install -e .
     - name: Install libraries
-      run: pip install -U build twine
+      run: pip install -U build
     - name: Create wheel
       run: python -m build -o dist/ .
-    - name: Upload wheel
-      run: twine upload -u __token__ -p ${{ secrets.PYPI_API_TOKEN }} --non-interactive "dist/*"
+    - name: Publish package distributions to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
     - name: Determine version
       run: |
         tag="${GITHUB_REF#refs/*/}"
