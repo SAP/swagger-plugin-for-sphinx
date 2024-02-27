@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.5.0
+
+* No new features but a switch of the way this package is released
+
 ## 3.4.0
 
 * Official support file paths for `swagger_present_uri`, `swagger_bundle_uri` and `swagger_css_uri`
