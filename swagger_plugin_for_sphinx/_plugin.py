@@ -15,7 +15,7 @@ from sphinx.errors import SphinxError
 _HERE = Path(__file__).parent.resolve()
 
 
-class InlineSwaggerDirective(Raw):  # type:ignore[misc]
+class InlineSwaggerDirective(Raw):
     """Directive for inline swagger pages."""
 
     required_arguments = 0
