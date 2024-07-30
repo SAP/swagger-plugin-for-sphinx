@@ -73,7 +73,6 @@ warn_incomplete_stub = true
 warn_no_return = true
 warn_unreachable = true
 strict = true
-python_version = "3.8"
 # output
 pretty = true
 show_column_numbers = true
