@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.6.0
+
+* Add support for sphinx 8
+
 ## 3.5.0
 
 * No new features but a switch of the way this package is released
