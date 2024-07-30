@@ -26,6 +26,13 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         sphinx-version: ["6.*", "7.*", "8.*"]
+        exclude:
+          # sphinx 8 does not support python 3.8
+          - sphinx-version: "8.*"
+            python-version: "3.8"
+          # sphinx 8 does not support python 3.9
+          - sphinx-version: "8.*"
+            python-version: "3.9"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
