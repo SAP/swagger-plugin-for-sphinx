@@ -41,7 +41,7 @@ text = "Apache-2.0"
 [project.optional-dependencies]
 dev = [
     "pre-commit==3.8.0",
-    "pylint==3.2.7",
+    "pylint==3.3.0",
     "black==24.8.0",
     "isort==5.13.2",
     "flake8==7.1.1",
@@ -97,6 +97,8 @@ disable = [
     # allow disables
     "locally-disabled",
     "suppressed-message",
+    # disable too-many checks
+    "too-many-positional-arguments",
 ]
 
 [tool.pylint.reports]
