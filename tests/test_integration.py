@@ -22,17 +22,18 @@ def test() -> None:
     options = webdriver.ChromeOptions()
     options.add_argument("--ignore-certificate-errors")
 
-    with webdriver.Remote(
-        "http://localhost:4444", options=options
-    ) as browser, subprocess.Popen(
-        [
-            "python",
-            "-m",
-            "http.server",
-            "--directory",
-            "tests/test_data/_build/",
-        ]
-    ) as popen:
+    with (
+        webdriver.Remote("http://localhost:4444", options=options) as browser,
+        subprocess.Popen(
+            [
+                "python",
+                "-m",
+                "http.server",
+                "--directory",
+                "tests/test_data/_build/",
+            ]
+        ) as popen,
+    ):
         time.sleep(5)
         browser.get("http://localhost:8000/openapi.html")
         title = browser.find_element(By.CLASS_NAME, "title")

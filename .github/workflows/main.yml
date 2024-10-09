@@ -10,12 +10,12 @@ jobs:
   ci-pre-commit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.13"
       - name: Install project
         run: pip install -e .[dev,test]
       - name: run pre-commit
@@ -24,21 +24,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
         sphinx-version: ["6.*", "7.*", "8.*"]
         exclude:
-          # sphinx 8 does not support python 3.8
-          - sphinx-version: "8.*"
-            python-version: "3.8"
           # sphinx 8 does not support python 3.9
           - sphinx-version: "8.*"
             python-version: "3.9"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install project
