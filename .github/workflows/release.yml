@@ -17,11 +17,11 @@ jobs:
       contents: write
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: "3.12"
+        python-version: "3.13"
     - name: Install project
       run: pip install -e .
     - name: Install libraries
@@ -36,7 +36,7 @@ jobs:
         version="${tag:1}"
         echo "RELEASE_VERSION=${version}" >> $GITHUB_ENV
     - name: Release on GitHub
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: dist/*
         name: Version ${{ env.RELEASE_VERSION }}
