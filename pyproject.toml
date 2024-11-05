@@ -53,7 +53,7 @@ test = [
     "coverage==7.6.4",
     "diff-cover==9.2.0",
     "pytest-cov==6.0.0",
-    "selenium==4.25.0",
+    "selenium==4.26.1",
 ]
 
 [tool.setuptools.packages.find]
