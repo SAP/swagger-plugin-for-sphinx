@@ -7,12 +7,93 @@ from pathlib import Path
 from typing import Any, Iterator
 
 import jinja2
+from docutils import nodes
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.directives.misc import Raw
 from sphinx.application import Sphinx
-from sphinx.errors import SphinxError
+from sphinx.errors import ExtensionError, SphinxError
+from sphinx.util import logging
+from sphinx.util.docutils import SphinxDirective
 
+logger = logging.getLogger(__name__)
 _HERE = Path(__file__).parent.resolve()
+
+
+class SwaggerPluginDirective(SphinxDirective):
+    """Directive for Swagger content."""
+
+    required_arguments = 0
+    # Required arg, path to the specification, is marked as optional
+    # so the directive can throw the exception rather than docutils.
+    optional_arguments = 1
+    option_spec = {
+        "id": directives.unchanged,
+        "classes": directives.class_option,
+    }
+    has_content = False
+
+    def run(self) -> list[nodes.Node]:
+        app: Sphinx = self.state.document.settings.env.app
+
+        if len(self.arguments) != 1:
+            raise ExtensionError(
+                f"Specify the relative path to the Swagger specification in file: "
+                f"{app.env.doc2path(app.env.docname)}:{self.lineno}."
+            )
+
+        # TODO: HTTP URLs
+        relpath, abspath = self.env.relfn2path(self.arguments[0])
+        spec = Path(abspath).resolve()
+        if not spec.exists():
+            raise ExtensionError(
+                f"In file '{app.env.doc2path(app.env.docname)}:{self.lineno}', "
+                f"file not found: {self.arguments[0]}."
+            )
+
+        rel_parts = Path(relpath).parts
+        static = Path(app.srcdir).joinpath(rel_parts[0])
+        logger.info(f"Adding to html_static_path: {static}.")
+        app.config.html_static_path.extend([static])
+
+        # If the relative path does not start with _static/, add it.
+        url_path = self.arguments[0]
+        if not url_path.startswith("_static/"):
+            url_path = "_static/" + url_path
+
+        div_id = self.options.get("id", "swagger-ui-container")
+
+        node = nodes.container(ids=[div_id], classes=self.options.get("classes", []))
+        self.set_source_info(node)
+
+        self.env.metadata[self.env.docname]["swagger_plugin"] = {
+            "url_path": url_path,
+            "div_id": div_id,
+        }
+        return [node]
+
+
+def add_css_js(app: Sphinx, pagename: str) -> None:
+    """Add Swagger CSS and JS to pages with swagger-plugin directive."""
+
+    if "swagger_plugin" not in app.env.metadata[pagename]:
+        return
+
+    url_path = app.env.metadata[pagename]["swagger_plugin"]["url_path"]
+    div_id = app.env.metadata[pagename]["swagger_plugin"]["div_id"]
+
+    app.add_js_file(app.config.swagger_present_uri)
+    app.add_js_file(app.config.swagger_bundle_uri)
+    app.add_css_file(app.config.swagger_css_uri)
+    app.add_js_file(
+        None,
+        body=f"""
+            config={{"url": "{url_path}"}}
+            config["dom_id"] = "#{div_id}"
+            window.onload = function() {{
+                window.ui = SwaggerUIBundle(config);
+            }}
+            """,
+    )
 
 
 class InlineSwaggerDirective(Raw):
@@ -94,8 +175,10 @@ def setup(app: Sphinx) -> dict[str, Any]:
     )
 
     app.connect("html-collect-pages", render)
+    app.connect("html-page-context", add_css_js)
 
     app.add_directive("inline-swagger", InlineSwaggerDirective)
+    app.add_directive("swagger-plugin", SwaggerPluginDirective)
 
     return {
         "version": version("swagger_plugin_for_sphinx"),
