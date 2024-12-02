@@ -46,7 +46,7 @@ dev = [
     "isort==5.13.2",
     "flake8==7.1.1",
     "mypy==1.13.0",
-    "types-docutils==0.21.0.20241005",
+    "types-docutils==0.21.0.20241128",
 ]
 test = [
     "pytest==8.3.3",
