@@ -72,7 +72,13 @@ class SwaggerPluginDirective(SphinxDirective):
         return [node]
 
 
-def add_css_js(app: Sphinx, pagename: str) -> None:
+def add_css_js(
+    app: Sphinx,
+    pagename: str,
+    _template: str,
+    _context: dict[str, Any],
+    _doctree: nodes.document,
+) -> None:
     """Add Swagger CSS and JS to pages with swagger-plugin directive."""
 
     if "swagger_plugin" not in app.env.metadata[pagename]:
