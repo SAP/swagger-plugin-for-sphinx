@@ -65,10 +65,15 @@ class SwaggerPluginDirective(SphinxDirective):
         node = nodes.container(ids=[div_id], classes=self.options.get("classes", []))
         self.set_source_info(node)
 
-        self.env.metadata[self.env.docname]["swagger_plugin"] = {
-            "url_path": url_path,
-            "div_id": div_id,
-        }
+        if "swagger_plugin" not in self.env.metadata[self.env.docname]:
+            self.env.metadata[self.env.docname]["swagger_plugin"] = []
+
+        self.env.metadata[self.env.docname]["swagger_plugin"].append(
+            {
+                "url_path": url_path,
+                "div_id": div_id,
+            }
+        )
         return [node]
 
 
@@ -84,22 +89,17 @@ def add_css_js(
     if "swagger_plugin" not in app.env.metadata[pagename]:
         return
 
-    url_path = app.env.metadata[pagename]["swagger_plugin"]["url_path"]
-    div_id = app.env.metadata[pagename]["swagger_plugin"]["div_id"]
+    context = {"specs": app.env.metadata[pagename]["swagger_plugin"]}
+
+    with open(_HERE / "plugin_directive.j2", encoding="utf-8") as handle:
+        template = jinja2.Template(handle.read())
+
+    content = template.render(context)
 
     app.add_js_file(app.config.swagger_present_uri)
     app.add_js_file(app.config.swagger_bundle_uri)
     app.add_css_file(app.config.swagger_css_uri)
-    app.add_js_file(
-        None,
-        body=f"""
-            config={{"url": "{url_path}"}}
-            config["dom_id"] = "#{div_id}"
-            window.onload = function() {{
-                window.ui = SwaggerUIBundle(config);
-            }}
-            """,
-    )
+    app.add_js_file(None, body=content)
 
 
 class InlineSwaggerDirective(Raw):

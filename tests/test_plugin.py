@@ -134,15 +134,28 @@ def test_swagger_plugin_directive(sphinx_runner: SphinxRunner, tmp_path: Path) -
         encoding="utf-8",
     )
     api_file = docs / "api.rst"
+    contents = dedent(
+        """
+    API
+    ===
+
+    .. swagger-plugin:: _static/yaml/one.yaml
+       :id: one
+
+    .. swagger-plugin:: _static/yaml/two.yaml
+       :id: two
+    """
+    )
     api_file.write_text(
-        "API\n===\n\n.. swagger-plugin:: _static/yaml/openapi.yaml\n   :id: pet-store\n",
+        contents,
         encoding="utf-8",
     )
 
     spec = Path(__file__).parent / "test_data" / "_static" / "openapi.yml"
-    dest = docs / "_static" / "yaml" / "openapi.yaml"
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(spec.read_text())
+    for f in ["one.yaml", "two.yaml"]:
+        dest = docs / "_static" / "yaml" / f
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(spec.read_text())
 
     sphinx_runner(swagger=[])
 
@@ -152,11 +165,14 @@ def test_swagger_plugin_directive(sphinx_runner: SphinxRunner, tmp_path: Path) -
 
     assert "sphinx" in html
     assert "https://cdn.jsdelivr.net" in html
-    assert "_static/yaml/openapi.yaml" in html
-    assert "#pet-store" in html
-    assert "window.ui = SwaggerUIBundle(config);" in html
+    assert "_static/yaml/one.yaml" in html
+    assert "#one" in html
+    assert "_static/yaml/two.yaml" in html
+    assert "#two" in html
+    assert html.count("window.ui = SwaggerUIBundle({") == 2
+    assert html.count("swagger-ui-bundle.js") == 1
 
-    spec = tmp_path / "build" / "_static" / "yaml" / "openapi.yaml"
+    spec = tmp_path / "build" / "_static" / "yaml" / "one.yaml"
     assert spec.exists()
 
 
