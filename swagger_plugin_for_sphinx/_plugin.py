@@ -41,7 +41,6 @@ class SwaggerPluginDirective(SphinxDirective):
                 f"{app.env.doc2path(app.env.docname)}:{self.lineno}."
             )
 
-        # TODO: HTTP URLs
         relpath, abspath = self.env.relfn2path(self.arguments[0])
         spec = Path(abspath).resolve()
         if not spec.exists():
