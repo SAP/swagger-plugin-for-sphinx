@@ -10,6 +10,7 @@ from typing import Any, Callable
 
 import pytest
 from sphinx.application import Sphinx
+from sphinx.errors import ExtensionError
 
 SphinxRunner = Callable[..., None]
 
@@ -123,6 +124,127 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
 
     assert "sphinx" in html
     assert "window.ui = SwaggerUIBundle(config);" in html
+
+
+def test_swagger_plugin_directive(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
+    docs = tmp_path / "docs"
+    index_file = docs / "index.rst"
+    index_file.write_text(
+        "Project\n=======\n\n.. toctree::\n   api.rst",
+        encoding="utf-8",
+    )
+    api_file = docs / "api.rst"
+    contents = dedent(
+        """
+    API
+    ===
+
+    .. swagger-plugin:: _static/yaml/one.yaml
+       :id: one
+
+    .. swagger-plugin:: _static/yaml/two.yaml
+       :id: two
+    """
+    )
+    api_file.write_text(
+        contents,
+        encoding="utf-8",
+    )
+
+    spec = Path(__file__).parent / "test_data" / "_static" / "openapi.yml"
+    for f in ["one.yaml", "two.yaml"]:
+        dest = docs / "_static" / "yaml" / f
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(spec.read_text())
+
+    sphinx_runner(swagger=[])
+
+    build = tmp_path / "build"
+    with open(build / "api.html", encoding="utf-8") as file:
+        html = file.read()
+
+    assert "sphinx" in html
+    assert "https://cdn.jsdelivr.net" in html
+    assert "_static/yaml/one.yaml" in html
+    assert "#one" in html
+    assert "_static/yaml/two.yaml" in html
+    assert "#two" in html
+    assert html.count("window.ui = SwaggerUIBundle({") == 2
+    assert html.count("swagger-ui-bundle.js") == 1
+
+    spec = tmp_path / "build" / "_static" / "yaml" / "one.yaml"
+    assert spec.exists()
+
+
+def test_swagger_plugin_directive_same_dir(
+    sphinx_runner: SphinxRunner, tmp_path: Path
+) -> None:
+    docs = tmp_path / "docs"
+    index_file = docs / "index.rst"
+    index_file.write_text(
+        "Project\n=======\n\n.. toctree::\n   api.rst",
+        encoding="utf-8",
+    )
+    api_file = docs / "api.rst"
+    api_file.write_text(
+        "API\n===\n\n.. swagger-plugin:: openapi.yaml\n",
+        encoding="utf-8",
+    )
+
+    spec = Path(__file__).parent / "test_data" / "_static" / "openapi.yml"
+    dest = docs / "openapi.yaml"
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(spec.read_text())
+
+    sphinx_runner(swagger=[])
+
+    build = tmp_path / "build"
+    with open(build / "api.html", encoding="utf-8") as file:
+        html = file.read()
+
+    assert "_static/openapi.yaml" in html
+    assert "#swagger-ui-container" in html
+
+    spec = tmp_path / "build" / "_static" / "openapi.yaml"
+    assert spec.exists()
+
+
+def test_swagger_plugin_directive_exception(
+    sphinx_runner: SphinxRunner, tmp_path: Path
+) -> None:
+    docs = tmp_path / "docs"
+    api_file = docs / "api.rst"
+    api_file.write_text(
+        "API\n===\n\n.. swagger-plugin:: openapi.yaml\n   :id: pet-store\n",
+        encoding="utf-8",
+    )
+    index_file = docs / "index.rst"
+    index_file.write_text(
+        "Project\n=======\n\n.. toctree::\n   api.rst",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ExtensionError, match="file not found: openapi.yaml"):
+        sphinx_runner(swagger=[])
+
+
+def test_swagger_plugin_directive_no_arg(
+    sphinx_runner: SphinxRunner, tmp_path: Path
+) -> None:
+    docs = tmp_path / "docs"
+    api_file = docs / "api.rst"
+    api_file.write_text(
+        "API\n===\n\n.. swagger-plugin::\n   :id: pet-store\n",
+        encoding="utf-8",
+    )
+    index_file = docs / "index.rst"
+    index_file.write_text(
+        "Project\n=======\n\n.. toctree::\n   api.rst",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ExtensionError, match="docs/api.rst:4"):
+        sphinx_runner(swagger=[])
 
 
 @pytest.mark.parametrize(

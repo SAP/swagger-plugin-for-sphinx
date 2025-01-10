@@ -11,24 +11,26 @@ It can generate one or multiple swagger HTML pages with a custom configuration t
 
 Just run `pip install swagger-plugin-for-sphinx`
 
-
 ## Usage
 
-### Enable the plugin
+### Enable the Plugin
 
 First, add the plugin to the extensions list:
+
 ```python
 extensions = ["swagger_plugin_for_sphinx"]
 ```
 
-### Global configuration
+### Global Configuration
 
 Then add the main configuration for swagger:
+
 ```python
 swagger_present_uri = ""
 swagger_bundle_uri = ""
 swagger_css_uri = ""
 ```
+
 These correspond to the modules explained [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md).
 By default, the latest release is used from [here](https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest).
 
@@ -36,8 +38,38 @@ Note, that also file paths can be used.
 First, specify your paths in the `html_static_path` config of sphinx.
 Then customize the corresponding uri settings like `_static/<myfile>`
 
-### Standalone page
+### Swagger Plugin Page
+
+To include a Swagger API specification into an HTML page specify the `swagger-plugin` directive and the relative path to the specification:
+
+```code
+.. swagger-plugin:: path/to/spec.yaml
+```
+
+The directive performs the following actions:
+
+- Adds the Swagger JavaScript and CSS files to the HTML page.
+- Adds the Swagger configuration to the HTML page.
+- Adds the specification YAML file to the `html_static_path`.
+
+In contrast with the `inline-swagger` directive, you do not need to add the `swagger`
+configuration in your `conf.py` file.
+
+By default, the directive creates a `<div>` element with the ID `swagger-ui-container`.
+If you put more than one `swagger-plugin` directive in a file, specify unique IDs, like the following example:
+
+```code
+.. swagger-plugin:: path/to/one.yaml
+   :id: spec-one
+
+.. swagger-plugin:: path/to/two.yaml
+   :id: spec-two
+```
+
+### Standalone Page
+
 As a last step, define the swagger configuration as follows:
+
 ```python
 swagger = [
     {
@@ -50,6 +82,7 @@ swagger = [
     }
 ]
 ```
+
 Each item on the list will generate a new swagger HTML page.
 The `name` is the HTML page name and `page` defines the file name without an extension. This needs to be included in the TOC.
 The `options` are then used for the `SwaggerUIBundle` as defined [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md).
@@ -57,7 +90,8 @@ Please don't specify the `dom_id` since it's hardcoded in the HTML page.
 If the specification is provided as a file, don't forget to copy it (e.g., by putting it into the `html_static_path`).
 To silence the warning `toctree contains reference to nonexisting document`, just put a dummy file with the same name as `page` into the source folder.
 
-## Inline swagger page
+## Inline Swagger Page
+
 To include a swagger page into a sphinx page use the directive ``inline-swagger``:
 
 ```rst
@@ -65,9 +99,9 @@ To include a swagger page into a sphinx page use the directive ``inline-swagger`
     :id: my-page
 ```
 
-The ``id`` links to an existing configuration in ``conf.py`` as shows above.
-In this case, the configuration ``page`` will be ignored.
-Behind the scenes, a swagger HTML page is generated and then inserted using the ``.. raw::``
+The ``id`` links to an existing configuration in ``conf.py`` as shown in the standalone page section.
+In this case, the configuration ``page`` is ignored.
+The extension creates an HTML page and inserts the Swagger configuration using the ``.. raw::``
 directive.
 
 ## Build and Publish

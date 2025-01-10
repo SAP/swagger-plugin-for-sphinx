@@ -1,5 +1,13 @@
 # Changelog
 
+## 4.1.0
+
+* Add a `swagger-plugin` directive:
+
+  * Automatically copy the specification YAML file to the HTML static path.
+  * Insert the Swagger JavaScript and CSS tags in the `<head>` element of the HTML page.
+  * Does not require the `swagger` configuration in the `conf.py` file.
+
 ## 4.0.0
 
 * Add support for python 3.13

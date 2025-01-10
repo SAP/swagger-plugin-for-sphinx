@@ -1,0 +1,9 @@
+
+window.onload = () => {
+  {% for spec in specs %}
+  window.ui = SwaggerUIBundle({
+    url: "{{ spec.url_path }}",
+    dom_id: "#{{ spec.div_id }}",
+  })
+  {% endfor %}
+}
