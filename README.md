@@ -42,14 +42,9 @@ Then customize the corresponding uri settings like `_static/<myfile>`
 
 To include a Swagger API specification into an HTML page specify the `swagger-plugin` directive and the relative path to the specification:
 
-````code
-# Markdown
-```{swagger-plugin} path/to/spec.yaml
-```
-
-# RST
+```code
 .. swagger-plugin:: path/to/spec.yaml
-````
+```
 
 The directive performs the following actions:
 
@@ -63,16 +58,13 @@ configuration in your `conf.py` file.
 By default, the directive creates a `<div>` element with the ID `swagger-ui-container`.
 If you put more than one `swagger-plugin` directive in a file, specify unique IDs, like the following example:
 
-````code
-# Markdown
-```{swagger-plugin} path/to/one.yaml
-:id: spec-one
-```
+```code
+.. swagger-plugin:: path/to/one.yaml
+   :id: spec-one
 
-```{swagger-plugin} path/to/two.yaml
-:id: spec-two
+.. swagger-plugin:: path/to/two.yaml
+   :id: spec-two
 ```
-````
 
 ### Standalone Page
 
