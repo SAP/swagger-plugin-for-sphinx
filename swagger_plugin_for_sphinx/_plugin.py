@@ -55,14 +55,14 @@ class SwaggerPluginDirective(SphinxDirective):
             )
 
         rel_parts = Path(relpath).parts
-        static = Path(app.srcdir).joinpath(rel_parts[0])
-        logger.info(f"Adding to html_static_path: {static}.")
-        app.config.html_static_path.extend([static])
+        logger.info(f"Adding to html_static_path: {spec}.")
+        app.config.html_static_path.extend([spec])
 
-        # If the relative path does not start with _static/, add it.
-        url_path = self.arguments[0]
-        if not url_path.startswith("_static/"):
-            url_path = "_static/" + url_path
+        url_path = (
+            "../".join(["" for _ in range(len(rel_parts))])
+            + "_static/"
+            + self.arguments[0]
+        )
 
         config = {
             "full_page": "full-page" in self.options,

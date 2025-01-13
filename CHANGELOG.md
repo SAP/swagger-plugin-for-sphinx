@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+* Fix some errors when the spec is in a subdirectory
+
 ## 5.0.0
 
 This release combines the previous three way into one directive streamlining the project
