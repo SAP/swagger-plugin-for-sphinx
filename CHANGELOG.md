@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.0.0
+
+This release combines the previous three way into one directive streamlining the project
+
+* Removed the `swagger` configuration from `conf.py` (however, the `swagger_*` configuration remain).
+  Use the `swagger-plugin` directive with the `full-page` option to active the same
+* Removed the `inline-swagger` directive.
+  Use the `swagger-plugin` directive instead
+
 ## 4.1.0
 
 * Add a `swagger-plugin` directive:

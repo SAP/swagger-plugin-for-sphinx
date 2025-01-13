@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any, Iterator
@@ -9,9 +10,8 @@ from typing import Any, Iterator
 import jinja2
 from docutils import nodes
 from docutils.parsers.rst import directives
-from docutils.parsers.rst.directives.misc import Raw
 from sphinx.application import Sphinx
-from sphinx.errors import ExtensionError, SphinxError
+from sphinx.errors import ExtensionError
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
 
@@ -29,11 +29,16 @@ class SwaggerPluginDirective(SphinxDirective):
     option_spec = {
         "id": directives.unchanged,
         "classes": directives.class_option,
+        "full-page": directives.flag,
+        "page-title": directives.unchanged,
+        "swagger-options": directives.unchanged,
     }
     has_content = False
 
     def run(self) -> list[nodes.Node]:
         app: Sphinx = self.state.document.settings.env.app
+        metadata = self.env.metadata[self.env.docname]
+        configs = metadata.setdefault("swagger_plugin", [])
 
         if len(self.arguments) != 1:
             raise ExtensionError(
@@ -59,20 +64,21 @@ class SwaggerPluginDirective(SphinxDirective):
         if not url_path.startswith("_static/"):
             url_path = "_static/" + url_path
 
-        div_id = self.options.get("id", "swagger-ui-container")
+        config = {
+            "full_page": "full-page" in self.options,
+            "url_path": url_path,
+            "swagger_options": json.loads(self.options.get("swagger-options", "{}")),
+            "page_title": self.options.get("page-title", "OpenAPI Specification"),
+        }
+        configs.append(config)
 
+        if config["full_page"]:
+            return []
+
+        div_id = self.options.get("id", "swagger-ui-container")
         node = nodes.container(ids=[div_id], classes=self.options.get("classes", []))
         self.set_source_info(node)
-
-        if "swagger_plugin" not in self.env.metadata[self.env.docname]:
-            self.env.metadata[self.env.docname]["swagger_plugin"] = []
-
-        self.env.metadata[self.env.docname]["swagger_plugin"].append(
-            {
-                "url_path": url_path,
-                "div_id": div_id,
-            }
-        )
+        config["div_id"] = div_id
         return [node]
 
 
@@ -84,15 +90,17 @@ def add_css_js(
     _doctree: nodes.document,
 ) -> None:
     """Add Swagger CSS and JS to pages with swagger-plugin directive."""
-    if "swagger_plugin" not in app.env.metadata[pagename]:
+    configs = app.env.metadata[pagename].get("swagger_plugin", [])
+
+    if not configs:
+        return
+    if configs[0]["full_page"]:
         return
 
-    context = {"specs": app.env.metadata[pagename]["swagger_plugin"]}
-
-    with open(_HERE / "plugin_directive.j2", encoding="utf-8") as handle:
+    with open(_HERE / "inline_template.j2", encoding="utf-8") as handle:
         template = jinja2.Template(handle.read())
 
-    content = template.render(context)
+    content = template.render({"specs": configs})
 
     app.add_js_file(app.config.swagger_present_uri)
     app.add_js_file(app.config.swagger_bundle_uri)
@@ -100,68 +108,33 @@ def add_css_js(
     app.add_js_file(None, body=content)
 
 
-class InlineSwaggerDirective(Raw):
-    """Directive for inline swagger pages."""
-
-    required_arguments = 0
-    option_spec = {"id": directives.unchanged_required}
-    has_content = False
-
-    def run(self) -> Any:
-        app: Sphinx = self.state.document.settings.env.app
-        template_path = _HERE / "swagger.j2"
-
-        # find the right configuration for the page
-        for index, context in enumerate(app.config.swagger):
-            if context.get("id") == self.options["id"]:
-                break
-        else:
-            raise SphinxError(
-                f"Cannot find any swagger configuration with id '{self.options['id']}'"
-            )
-
-        # remove the configuration, so that we have no double generation
-        app.config.swagger.pop(index)
-
-        with template_path.open(encoding="utf-8") as handle:
-            template = jinja2.Template(handle.read())
-
-        context.setdefault("options", {})
-        context["css_uri"] = app.config.swagger_css_uri
-        context["bundle_uri"] = app.config.swagger_bundle_uri
-        context["present_uri"] = app.config.swagger_present_uri
-
-        static_folder = Path(app.builder.outdir) / "_static"
-        static_folder.mkdir(exist_ok=True)
-        content = template.render(context)
-
-        html_file = static_folder / (context["id"] + ".html")
-        html_file.write_text(content)
-
-        self.arguments = ["html"]
-        self.options["file"] = str(html_file)
-        return super().run()
-
-
 def render(app: Sphinx) -> Iterator[tuple[Any, ...]]:
     """Render the swagger HTML pages."""
-    for context in app.config.swagger:
-        template_path = _HERE / "swagger.j2"
+    for pagename, context in app.env.metadata.items():
+        configs = context.get("swagger_plugin", [])
+        if not configs:
+            continue
+        config = configs[0]
+        if not config["full_page"]:
+            continue
 
+        template_path = _HERE / "full_page_template.j2"
         with template_path.open(encoding="utf-8") as handle:
             template = jinja2.Template(handle.read())
 
-        context.setdefault("options", {})
-        context["css_uri"] = app.config.swagger_css_uri
-        context["bundle_uri"] = app.config.swagger_bundle_uri
-        context["present_uri"] = app.config.swagger_present_uri
+        params = {}
+        params["options"] = config["swagger_options"]
+        params["css_uri"] = app.config.swagger_css_uri
+        params["bundle_uri"] = app.config.swagger_bundle_uri
+        params["present_uri"] = app.config.swagger_present_uri
+        params["page_title"] = config["page_title"]
+        params["url_path"] = config["url_path"]
 
-        yield context["page"], context, template
+        yield pagename, params, template
 
 
 def setup(app: Sphinx) -> dict[str, Any]:
     """Setup this plugin."""
-    app.add_config_value("swagger", [], "html")
     app.add_config_value(
         "swagger_present_uri",
         "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-standalone-preset.js",
@@ -181,7 +154,6 @@ def setup(app: Sphinx) -> dict[str, Any]:
     app.connect("html-collect-pages", render)
     app.connect("html-page-context", add_css_js)
 
-    app.add_directive("inline-swagger", InlineSwaggerDirective)
     app.add_directive("swagger-plugin", SwaggerPluginDirective)
 
     return {
