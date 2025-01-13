@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{{ name | default('OpenAPI Specification') }}</title>
+        <title>{{page_title}}</title>
         <link href="{{css_uri}}" rel="stylesheet" type="text/css"/>
         <meta charset="utf-8"/>
     </head>
@@ -12,6 +12,7 @@
         <script>
             config = {{options}}
             config["dom_id"] = "#swagger-ui-container"
+            config["url"] = "{{url_path}}"
             window.onload = function() {
                 window.ui = SwaggerUIBundle(config);
             }

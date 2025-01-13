@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 from textwrap import dedent
-from typing import Any, Callable
+from typing import Callable
 
 import pytest
 from sphinx.application import Sphinx
@@ -23,14 +24,12 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
     build.mkdir()
 
     def run(
-        swagger: list[dict[str, Any]],
+        directive: str,
         swagger_present_uri: str | None = None,
         swagger_bundle_uri: str | None = None,
         swagger_css_uri: str | None = None,
     ) -> None:
         code = ["extensions = ['swagger_plugin_for_sphinx']"]
-        if swagger:
-            code.append(f"swagger = {swagger}")
         if swagger_present_uri:
             code.append(f"swagger_present_uri = '{swagger_present_uri}'")
         if swagger_bundle_uri:
@@ -43,7 +42,19 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
             file.write("\n".join(code))
 
         index = docs / "index.rst"
-        index.touch()
+        index.write_text(
+            "Project\n=======\n\n.. toctree::\n   api.rst",
+            encoding="utf-8",
+        )
+        api = docs / "api.rst"
+        api.write_text(
+            f"API\n===\n\n{directive}\n",
+            encoding="utf-8",
+        )
+
+        spec = Path(__file__).parent / "test_data" / "openapi.yml"
+        shutil.copyfile(str(spec), str(docs / "openapi.yaml"))
+        shutil.copyfile(str(spec), str(docs / "other.yaml"))
 
         Sphinx(
             srcdir=str(docs),
@@ -60,21 +71,13 @@ def test_run_empty(sphinx_runner: SphinxRunner) -> None:
     sphinx_runner([])
 
 
-def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
+def test_full_page(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     sphinx_runner(
-        swagger=[
-            {
-                "name": "Service API",
-                "page": "openapi",
-                "options": {
-                    "url": "openapi.yaml",
-                },
-            }
-        ]
+        directive=".. swagger-plugin:: openapi.yaml\n   :full-page:",
     )
 
     build = tmp_path / "build"
-    with open(build / "openapi.html", encoding="utf-8") as file:
+    with open(build / "api.html", encoding="utf-8") as file:
         html = file.read()
 
     base_url = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest"
@@ -82,7 +85,7 @@ def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
         f"""<!DOCTYPE html>
 <html>
     <head>
-        <title>Service API</title>
+        <title>OpenAPI Specification</title>
         <link href="{base_url}/swagger-ui.css" rel="stylesheet" type="text/css"/>
         <meta charset="utf-8"/>
     </head>
@@ -91,8 +94,9 @@ def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
         <script src="{base_url}/swagger-ui-standalone-preset.js"></script>
         <script src="{base_url}/swagger-ui-bundle.js"></script>
         <script>
-            config = {{'url': 'openapi.yaml'}}
+            config = {{}}
             config["dom_id"] = "#swagger-ui-container"
+            config["url"] = "_static/openapi.yaml"
             window.onload = function() {{
                 window.ui = SwaggerUIBundle(config);
             }}
@@ -105,59 +109,19 @@ def test(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
 
 
 def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
-    docs = tmp_path / "docs"
-    api_file = docs / "api.rst"
-    api_file.write_text(
-        "API\n===\n\n.. inline-swagger::\n    :id: myid\n", encoding="utf-8"
-    )
-
-    sphinx_runner(
-        swagger=[
-            {"name": "API1", "page": "openapi", "options": {"url": "openapi.yaml"}},
-            {"name": "API2", "id": "myid", "options": {"url": "openapi.yaml"}},
-        ]
-    )
-
-    build = tmp_path / "build"
-    with open(build / "api.html", encoding="utf-8") as file:
-        html = file.read()
-
-    assert "sphinx" in html
-    assert "window.ui = SwaggerUIBundle(config);" in html
-
-
-def test_swagger_plugin_directive(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
-    docs = tmp_path / "docs"
-    index_file = docs / "index.rst"
-    index_file.write_text(
-        "Project\n=======\n\n.. toctree::\n   api.rst",
-        encoding="utf-8",
-    )
-    api_file = docs / "api.rst"
     contents = dedent(
         """
     API
     ===
 
-    .. swagger-plugin:: _static/yaml/one.yaml
+    .. swagger-plugin:: openapi.yaml
        :id: one
 
-    .. swagger-plugin:: _static/yaml/two.yaml
+    .. swagger-plugin:: other.yaml
        :id: two
     """
     )
-    api_file.write_text(
-        contents,
-        encoding="utf-8",
-    )
-
-    spec = Path(__file__).parent / "test_data" / "_static" / "openapi.yml"
-    for f in ["one.yaml", "two.yaml"]:
-        dest = docs / "_static" / "yaml" / f
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_text(spec.read_text())
-
-    sphinx_runner(swagger=[])
+    sphinx_runner(directive=contents)
 
     build = tmp_path / "build"
     with open(build / "api.html", encoding="utf-8") as file:
@@ -165,38 +129,21 @@ def test_swagger_plugin_directive(sphinx_runner: SphinxRunner, tmp_path: Path) -
 
     assert "sphinx" in html
     assert "https://cdn.jsdelivr.net" in html
-    assert "_static/yaml/one.yaml" in html
+    assert "_static/openapi.yaml" in html
     assert "#one" in html
-    assert "_static/yaml/two.yaml" in html
+    assert "_static/other.yaml" in html
     assert "#two" in html
     assert html.count("window.ui = SwaggerUIBundle({") == 2
     assert html.count("swagger-ui-bundle.js") == 1
 
-    spec = tmp_path / "build" / "_static" / "yaml" / "one.yaml"
-    assert spec.exists()
+    assert (tmp_path / "build" / "_static" / "openapi.yaml").exists()
+    assert (tmp_path / "build" / "_static" / "other.yaml").exists()
 
 
 def test_swagger_plugin_directive_same_dir(
     sphinx_runner: SphinxRunner, tmp_path: Path
 ) -> None:
-    docs = tmp_path / "docs"
-    index_file = docs / "index.rst"
-    index_file.write_text(
-        "Project\n=======\n\n.. toctree::\n   api.rst",
-        encoding="utf-8",
-    )
-    api_file = docs / "api.rst"
-    api_file.write_text(
-        "API\n===\n\n.. swagger-plugin:: openapi.yaml\n",
-        encoding="utf-8",
-    )
-
-    spec = Path(__file__).parent / "test_data" / "_static" / "openapi.yml"
-    dest = docs / "openapi.yaml"
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(spec.read_text())
-
-    sphinx_runner(swagger=[])
+    sphinx_runner(".. swagger-plugin:: openapi.yaml")
 
     build = tmp_path / "build"
     with open(build / "api.html", encoding="utf-8") as file:
@@ -209,42 +156,14 @@ def test_swagger_plugin_directive_same_dir(
     assert spec.exists()
 
 
-def test_swagger_plugin_directive_exception(
-    sphinx_runner: SphinxRunner, tmp_path: Path
-) -> None:
-    docs = tmp_path / "docs"
-    api_file = docs / "api.rst"
-    api_file.write_text(
-        "API\n===\n\n.. swagger-plugin:: openapi.yaml\n   :id: pet-store\n",
-        encoding="utf-8",
-    )
-    index_file = docs / "index.rst"
-    index_file.write_text(
-        "Project\n=======\n\n.. toctree::\n   api.rst",
-        encoding="utf-8",
-    )
-
-    with pytest.raises(ExtensionError, match="file not found: openapi.yaml"):
-        sphinx_runner(swagger=[])
+def test_spec_not_found(sphinx_runner: SphinxRunner) -> None:
+    with pytest.raises(ExtensionError, match="file not found: unknown"):
+        sphinx_runner(directive=".. swagger-plugin:: unknown")
 
 
-def test_swagger_plugin_directive_no_arg(
-    sphinx_runner: SphinxRunner, tmp_path: Path
-) -> None:
-    docs = tmp_path / "docs"
-    api_file = docs / "api.rst"
-    api_file.write_text(
-        "API\n===\n\n.. swagger-plugin::\n   :id: pet-store\n",
-        encoding="utf-8",
-    )
-    index_file = docs / "index.rst"
-    index_file.write_text(
-        "Project\n=======\n\n.. toctree::\n   api.rst",
-        encoding="utf-8",
-    )
-
+def test_swagger_plugin_directive_no_arg(sphinx_runner: SphinxRunner) -> None:
     with pytest.raises(ExtensionError, match="docs/api.rst:4"):
-        sphinx_runner(swagger=[])
+        sphinx_runner(directive=".. swagger-plugin::\n   :id: pet-store")
 
 
 @pytest.mark.parametrize(
@@ -279,27 +198,21 @@ def test_custom_urls(
     expected_css_uri: str,
 ) -> None:
     sphinx_runner(
-        [
-            {
-                "name": "Service API",
-                "page": "openapi",
-                "options": {"url": "openapi.yaml"},
-            }
-        ],
+        ".. swagger-plugin:: openapi.yaml\n   :full-page:",
         present_uri,
         bundle_uri,
         css_uri,
     )
 
     build = tmp_path / "build"
-    with open(build / "openapi.html", encoding="utf-8") as file:
+    with open(build / "api.html", encoding="utf-8") as file:
         html = file.read()
 
     expected = dedent(
         f"""<!DOCTYPE html>
 <html>
     <head>
-        <title>Service API</title>
+        <title>OpenAPI Specification</title>
         <link href="{expected_css_uri}" rel="stylesheet" type="text/css"/>
         <meta charset="utf-8"/>
     </head>
@@ -308,8 +221,9 @@ def test_custom_urls(
         <script src="{expected_present_uri}"></script>
         <script src="{expected_bundle_uri}"></script>
         <script>
-            config = {{'url': 'openapi.yaml'}}
+            config = {{}}
             config["dom_id"] = "#swagger-ui-container"
+            config["url"] = "_static/openapi.yaml"
             window.onload = function() {{
                 window.ui = SwaggerUIBundle(config);
             }}

@@ -13,13 +13,3 @@ version = "1.0.0"
 
 extensions = ["swagger_plugin_for_sphinx"]
 html_static_path = ["_static"]
-
-# -- Swagger -------------------------------------------------
-
-swagger = [
-    {
-        "name": "OpenAPI Specification",
-        "page": "openapi",
-        "options": {"url": "../_static/openapi.yml"},
-    }
-]
