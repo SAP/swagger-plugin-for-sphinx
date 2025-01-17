@@ -14,6 +14,7 @@ from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
+from sphinx.util.fileutil import copy_asset_file
 
 logger = logging.getLogger(__name__)
 _HERE = Path(__file__).parent.resolve()
@@ -46,22 +47,25 @@ class SwaggerPluginDirective(SphinxDirective):
                 f"{app.env.doc2path(app.env.docname)}:{self.lineno}."
             )
 
-        relpath, abspath = self.env.relfn2path(self.arguments[0])
-        spec = Path(abspath).resolve()
+        spec_abspath = self.env.relfn2path(self.arguments[0])[1]
+        spec = Path(spec_abspath).resolve()
         if not spec.exists():
             raise ExtensionError(
                 f"In file '{app.env.doc2path(app.env.docname)}:{self.lineno}', "
                 f"file not found: {self.arguments[0]}."
             )
 
-        rel_parts = Path(relpath).parts
+        spec_file = Path(spec_abspath).name
         logger.info(f"Adding to html_static_path: {spec}.")
-        app.config.html_static_path.extend([spec])
+        if app.builder.format == 'html':
+            staticdir = Path(app.builder.outdir).joinpath('_static')
+            copy_asset_file(spec, staticdir)
+
 
         url_path = (
-            "../".join(["" for _ in range(len(rel_parts))])
+            "../".join(["" for _ in range(len(app.env.docname.split("/"))+1)])
             + "_static/"
-            + rel_parts[-1]
+            + spec_file
         )
 
         config = {
