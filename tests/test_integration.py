@@ -35,7 +35,22 @@ def test() -> None:
         ) as popen,
     ):
         time.sleep(5)
-        browser.get("http://localhost:8000/openapi.html")
-        title = browser.find_element(By.CLASS_NAME, "title")
-        assert title.text.split("\n")[0] == "Swagger Petstore"
-        popen.terminate()
+        try:
+            _check_page_title(browser, "openapi", ["Swagger Petstore in Main"])
+            _check_page_title(
+                browser,
+                "subfolder/p1",
+                ["Swagger Petstore in Subfolder", "Swagger Petstore in Main"],
+            )
+            _check_page_title(browser, "subfolder/p2", ["Swagger Petstore in Specs"])
+        finally:
+            popen.terminate()
+
+
+def _check_page_title(
+    browser: webdriver.Remote, page: str, expected_title: list[str]
+) -> None:
+    browser.get(f"http://localhost:8000/{page}.html")
+    elements = browser.find_elements(By.CLASS_NAME, "title")
+    titles = [element.text.split("\n")[0] for element in elements]
+    assert titles == expected_title

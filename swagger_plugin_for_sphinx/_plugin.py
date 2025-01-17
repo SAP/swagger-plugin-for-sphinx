@@ -46,7 +46,7 @@ class SwaggerPluginDirective(SphinxDirective):
                 f"{app.env.doc2path(app.env.docname)}:{self.lineno}."
             )
 
-        relpath, abspath = self.env.relfn2path(self.arguments[0])
+        _, abspath = self.env.relfn2path(self.arguments[0])
         spec = Path(abspath).resolve()
         if not spec.exists():
             raise ExtensionError(
@@ -54,14 +54,13 @@ class SwaggerPluginDirective(SphinxDirective):
                 f"file not found: {self.arguments[0]}."
             )
 
-        rel_parts = Path(relpath).parts
         logger.info(f"Adding to html_static_path: {spec}.")
         app.config.html_static_path.extend([spec])
 
         url_path = (
-            "../".join(["" for _ in range(len(rel_parts))])
+            "../".join(["" for _ in range(len(app.env.docname.split("/")))])
             + "_static/"
-            + self.arguments[0]
+            + spec.name
         )
 
         config = {

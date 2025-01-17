@@ -1,6 +1,6 @@
 OpenAPI Specification
 =====================
 
-.. swagger-plugin:: openapi.yml
+.. swagger-plugin:: openapi_main.yml
     :full-page:
     :page-title: Swagger Petstore

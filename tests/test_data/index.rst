@@ -6,3 +6,5 @@ Sample Docu
 
    overview
    openapi
+   subfolder/p1
+   subfolder/p2

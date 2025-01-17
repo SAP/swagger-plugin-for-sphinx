@@ -52,7 +52,7 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
             encoding="utf-8",
         )
 
-        spec = Path(__file__).parent / "test_data" / "openapi.yml"
+        spec = Path(__file__).parent / "test_data" / "openapi_main.yml"
         shutil.copyfile(str(spec), str(docs / "openapi.yaml"))
         shutil.copyfile(str(spec), str(docs / "other.yaml"))
 
