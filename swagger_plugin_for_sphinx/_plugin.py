@@ -61,7 +61,7 @@ class SwaggerPluginDirective(SphinxDirective):
         url_path = (
             "../".join(["" for _ in range(len(rel_parts))])
             + "_static/"
-            + self.arguments[0]
+            + rel_parts[-1]
         )
 
         config = {
