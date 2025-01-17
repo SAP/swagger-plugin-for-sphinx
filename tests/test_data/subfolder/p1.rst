@@ -1,0 +1,8 @@
+OpenAPI Specification for Subfolder 1
+=====================================
+
+.. swagger-plugin:: openapi_subfolder.yml
+    :id: openapi_subfolder
+
+.. swagger-plugin:: ../openapi_main.yml
+    :id: openapi_main

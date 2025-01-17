@@ -1,5 +1,10 @@
 # Changelog
 
+## 5.0.2
+
+* Fixed an issue causing a spec to be linked incorrectly when the source document is in a subfolder
+  but the referenced spec is in another one
+
 ## 5.0.1
 
 * Fix some errors when the spec is in a subdirectory

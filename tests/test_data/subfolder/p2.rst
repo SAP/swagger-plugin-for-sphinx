@@ -1,0 +1,5 @@
+OpenAPI Specification for Subfolder 2
+=====================================
+
+.. swagger-plugin:: ../specs/openapi_specs.yml
+    :full-page:
