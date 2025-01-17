@@ -57,9 +57,7 @@ class SwaggerPluginDirective(SphinxDirective):
 
         spec_file = Path(spec_abspath).name
         logger.info(f"Adding to html_static_path: {spec}.")
-        if app.builder.format == 'html':
-            staticdir = Path(app.builder.outdir).joinpath('_static')
-            copy_asset_file(spec, staticdir)
+        app.config.html_static_path.extend([spec])
 
 
         url_path = (
