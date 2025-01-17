@@ -14,7 +14,6 @@ from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
-from sphinx.util.fileutil import copy_asset_file
 
 logger = logging.getLogger(__name__)
 _HERE = Path(__file__).parent.resolve()
