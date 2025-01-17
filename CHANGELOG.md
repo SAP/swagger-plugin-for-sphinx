@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.2
+
+* Fix some errors when the spec is in a subdirectory and not in the same folder as the file referncing it.
+
 ## 5.0.1
 
 * Fix some errors when the spec is in a subdirectory
