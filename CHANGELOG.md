@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.3
+
+* Fixed an issue causing a spec to be linked incorrectly when the `dirhtml` builder is used.
+
 ## 5.0.2
 
 * Fixed an issue causing a spec to be linked incorrectly when the source document is in a subfolder
