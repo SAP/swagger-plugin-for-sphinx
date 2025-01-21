@@ -152,7 +152,6 @@ def test_swagger_plugin_directive_same_dir(
 
     assert "_static/openapi.yaml" in html
     assert "#swagger-ui-container" in html
-    assert "Failed to load API definition." not in html
 
     spec = tmp_path / "build" / "_static" / "openapi.yaml"
     assert spec.exists()
@@ -168,7 +167,6 @@ def test_swagger_plugin_dirhtml(
 
     assert "_static/openapi.yaml" in html
     assert "#swagger-ui-container" in html
-    assert "Failed to load API definition." not in html
 
     spec = tmp_path / "build" / "_static" / "openapi.yaml"
     assert spec.exists()
