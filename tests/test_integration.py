@@ -10,7 +10,6 @@ import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
-import socket
 
 @pytest.mark.integration
 def test_basic() -> None:
