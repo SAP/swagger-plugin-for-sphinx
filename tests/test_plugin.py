@@ -28,6 +28,7 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
         swagger_present_uri: str | None = None,
         swagger_bundle_uri: str | None = None,
         swagger_css_uri: str | None = None,
+        sphinx_builder: str | None = "html"
     ) -> None:
         code = ["extensions = ['swagger_plugin_for_sphinx']"]
         if swagger_present_uri:
@@ -61,7 +62,7 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
             confdir=str(docs),
             outdir=str(build),
             doctreedir=str(build / ".doctrees"),
-            buildername="html",
+            buildername=sphinx_builder,
         ).build()
 
     return run
@@ -151,6 +152,23 @@ def test_swagger_plugin_directive_same_dir(
 
     assert "_static/openapi.yaml" in html
     assert "#swagger-ui-container" in html
+    assert "Failed to load API definition." not in html
+
+    spec = tmp_path / "build" / "_static" / "openapi.yaml"
+    assert spec.exists()
+
+def test_swagger_plugin_dirhtml(
+    sphinx_runner: SphinxRunner, tmp_path: Path
+) -> None:
+    sphinx_runner(directive=".. swagger-plugin:: openapi.yaml", sphinx_builder="dirhtml")
+
+    build = tmp_path / "build"
+    with open(build / "api/index.html", encoding="utf-8") as file:
+        html = file.read()
+
+    assert "_static/openapi.yaml" in html
+    assert "#swagger-ui-container" in html
+    assert "Failed to load API definition." not in html
 
     spec = tmp_path / "build" / "_static" / "openapi.yaml"
     assert spec.exists()
