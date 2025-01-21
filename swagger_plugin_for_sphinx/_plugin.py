@@ -39,10 +39,7 @@ class SwaggerPluginDirective(SphinxDirective):
         app: Sphinx = self.state.document.settings.env.app
         metadata = self.env.metadata[self.env.docname]
         configs = metadata.setdefault("swagger_plugin", [])
-        path_offset = 0
-
-        if app.builder.name == "dirhtml" and app.env.docname.split("/") != ['index']:
-            path_offset = 1
+        path_offset = 1 if app.builder.name == "dirhtml" and app.env.docname.split("/") != ['index'] else 0
 
         if len(self.arguments) != 1:
             raise ExtensionError(
