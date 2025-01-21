@@ -39,7 +39,11 @@ class SwaggerPluginDirective(SphinxDirective):
         app: Sphinx = self.state.document.settings.env.app
         metadata = self.env.metadata[self.env.docname]
         configs = metadata.setdefault("swagger_plugin", [])
-        path_offset = 1 if app.builder.name == "dirhtml" and app.env.docname.split("/") != ['index'] else 0
+        path_offset = (
+            1
+            if app.builder.name == "dirhtml" and app.env.docname.split("/") != ["index"]
+            else 0
+        )
 
         if len(self.arguments) != 1:
             raise ExtensionError(
@@ -59,7 +63,9 @@ class SwaggerPluginDirective(SphinxDirective):
         app.config.html_static_path.extend([spec])
 
         url_path = (
-            "../".join(["" for _ in range(len(app.env.docname.split("/")) + path_offset)])
+            "../".join(
+                ["" for _ in range(len(app.env.docname.split("/")) + path_offset)]
+            )
             + "_static/"
             + spec.name
         )

@@ -28,7 +28,7 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
         swagger_present_uri: str | None = None,
         swagger_bundle_uri: str | None = None,
         swagger_css_uri: str | None = None,
-        sphinx_builder: str | None = "html"
+        sphinx_builder: str = "html",
     ) -> None:
         code = ["extensions = ['swagger_plugin_for_sphinx']"]
         if swagger_present_uri:
@@ -156,10 +156,11 @@ def test_swagger_plugin_directive_same_dir(
     spec = tmp_path / "build" / "_static" / "openapi.yaml"
     assert spec.exists()
 
-def test_swagger_plugin_dirhtml(
-    sphinx_runner: SphinxRunner, tmp_path: Path
-) -> None:
-    sphinx_runner(directive=".. swagger-plugin:: openapi.yaml", sphinx_builder="dirhtml")
+
+def test_swagger_plugin_dirhtml(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
+    sphinx_runner(
+        directive=".. swagger-plugin:: openapi.yaml", sphinx_builder="dirhtml"
+    )
 
     build = tmp_path / "build"
     with open(build / "api/index.html", encoding="utf-8") as file:

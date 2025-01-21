@@ -45,15 +45,17 @@ def test_basic() -> None:
             _check_page_title(browser, "subfolder/p2", ["Swagger Petstore in Specs"])
         finally:
             popen.terminate()
-            
+
+
 @pytest.mark.integration
 def test_dirhtml() -> None:
     """Test a dirhtml scenario."""
     shutil.rmtree("tests/test_data/_build", ignore_errors=True)
     subprocess.run(
-        ["sphinx-build", "-M", "dirhtml", "tests/test_data", "tests/test_data/_build"], check=True
+        ["sphinx-build", "-M", "dirhtml", "tests/test_data", "tests/test_data/_build"],
+        check=True,
     )
-    
+
     options = webdriver.ChromeOptions()
     options.add_argument("--ignore-certificate-errors")
 
@@ -77,9 +79,12 @@ def test_dirhtml() -> None:
                 "subfolder/p1",
                 ["Swagger Petstore in Subfolder", "Swagger Petstore in Main"],
             )
-            _check_page_title_dirhtml(browser, "subfolder/p2", ["Swagger Petstore in Specs"])
+            _check_page_title_dirhtml(
+                browser, "subfolder/p2", ["Swagger Petstore in Specs"]
+            )
         finally:
             popen.terminate()
+
 
 def _check_page_title(
     browser: webdriver.Remote, page: str, expected_title: list[str]
@@ -88,6 +93,7 @@ def _check_page_title(
     elements = browser.find_elements(By.CLASS_NAME, "title")
     titles = [element.text.split("\n")[0] for element in elements]
     assert titles == expected_title
+
 
 def _check_page_title_dirhtml(
     browser: webdriver.Remote, page: str, expected_title: list[str]
