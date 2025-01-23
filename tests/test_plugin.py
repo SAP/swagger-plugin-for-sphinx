@@ -250,3 +250,78 @@ def test_custom_urls(
     )
 
     assert expected == html
+
+
+@pytest.mark.parametrize("builder", ["html", "dirhtml"])
+# pylint: disable=R0914
+def test_subdirs(tmp_path: Path, builder: str) -> None:
+    docs = tmp_path / "docs"
+    subdir = docs / "subdir"
+    subsubdir = subdir / "subdirtwo"
+    subsubdir.mkdir(parents=True)
+    speconedir = docs / "api" / "one" / "yaml"
+    speconedir.mkdir(parents=True)
+    spectwodir = docs / "api" / "two" / "yaml"
+    spectwodir.mkdir(parents=True)
+    build = tmp_path / "build"
+    build.mkdir()
+
+    spec = Path(__file__).parent / "test_data" / "openapi_main.yml"
+    shutil.copyfile(str(spec), str(speconedir / "openapi.yaml"))
+    shutil.copyfile(str(spec), str(spectwodir / "openapi.yaml"))
+
+    code = ["extensions = ['swagger_plugin_for_sphinx']"]
+    conf = docs / "conf.py"
+    with open(conf, "w+", encoding="utf-8") as file:
+        file.write("\n".join(code))
+
+    index = docs / "index.rst"
+    index.write_text(
+        "Project\n=======\n\n.. toctree::\n\n   subdir/one.rst\n   subdir/subdirtwo/two.rst",
+        encoding="utf-8",
+    )
+    one = subdir / "one.rst"
+    one.write_text(
+        "API One\n=======\n\n.. swagger-plugin:: ../api/one/yaml/openapi.yaml\n",
+        encoding="utf-8",
+    )
+    two = subsubdir / "two.rst"
+    two.write_text(
+        "API Two\n=======\n\n.. swagger-plugin:: ../../api/two/yaml/openapi.yaml\n",
+        encoding="utf-8",
+    )
+
+    Sphinx(
+        srcdir=str(docs),
+        confdir=str(docs),
+        outdir=str(build),
+        doctreedir=str(build / ".doctrees"),
+        buildername=builder,
+    ).build()
+
+    assert build.joinpath("_static/api/one/yaml/openapi.yaml").exists()
+    assert build.joinpath("_static/api/two/yaml/openapi.yaml").exists()
+
+    if builder == "html":
+        with open(build / "subdir" / "one.html", encoding="utf-8") as file:
+            html = file.read()
+            assert "#swagger-ui-container" in html
+            assert "../_static/api/one/yaml/openapi.yaml" in html
+
+        with open(
+            build / "subdir" / "subdirtwo" / "two.html", encoding="utf-8"
+        ) as file:
+            html = file.read()
+            assert "#swagger-ui-container" in html
+            assert "../../_static/api/two/yaml/openapi.yaml" in html
+
+    if builder == "dirhtml":
+        with open(build / "subdir" / "one" / "index.html", encoding="utf-8") as file:
+            html = file.read()
+            assert "../../_static/api/one/yaml/openapi.yaml" in html
+
+        with open(
+            build / "subdir" / "subdirtwo" / "two" / "index.html", encoding="utf-8"
+        ) as file:
+            html = file.read()
+            assert "../../../_static/api/two/yaml/openapi.yaml" in html

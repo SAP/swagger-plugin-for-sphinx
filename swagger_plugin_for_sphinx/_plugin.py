@@ -14,6 +14,7 @@ from sphinx.application import Sphinx
 from sphinx.errors import ExtensionError
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
+from sphinx.util.osutil import copyfile, ensuredir
 
 logger = logging.getLogger(__name__)
 _HERE = Path(__file__).parent.resolve()
@@ -39,6 +40,9 @@ class SwaggerPluginDirective(SphinxDirective):
         app: Sphinx = self.state.document.settings.env.app
         metadata = self.env.metadata[self.env.docname]
         configs = metadata.setdefault("swagger_plugin", [])
+        # The static dir is set during builder init and not available from a variable or function.
+        # https://github.com/sphinx-doc/sphinx/blob/master/sphinx/builders/html/__init__.py#L137
+        static_dir = Path(app.builder.outdir / "_static")
         path_offset = (
             1
             if app.builder.name == "dirhtml" and app.env.docname.split("/") != ["index"]
@@ -51,7 +55,7 @@ class SwaggerPluginDirective(SphinxDirective):
                 f"{app.env.doc2path(app.env.docname)}:{self.lineno}."
             )
 
-        _, abspath = self.env.relfn2path(self.arguments[0])
+        relpath, abspath = self.env.relfn2path(self.arguments[0])
         spec = Path(abspath).resolve()
         if not spec.exists():
             raise ExtensionError(
@@ -59,15 +63,23 @@ class SwaggerPluginDirective(SphinxDirective):
                 f"file not found: {self.arguments[0]}."
             )
 
-        logger.info(f"Adding to html_static_path: {spec}.")
-        app.config.html_static_path.extend([spec])
+        logger.info(f"Adding to _static output path: {spec}.")
 
+        # Preserve the source directory structure to avoid name collisions.
+        outfile = static_dir.joinpath(relpath)
+        ensuredir(outfile.parent)
+        copyfile(spec, outfile)
+
+        # The range - 1 is to skip the RST or MD document itself.
         url_path = (
-            "../".join(
-                ["" for _ in range(len(app.env.docname.split("/")) + path_offset)]
+            "".join(
+                [
+                    "../"
+                    for _ in range(len(app.env.docname.split("/")) - 1 + path_offset)
+                ]
             )
             + "_static/"
-            + spec.name
+            + relpath
         )
 
         config = {

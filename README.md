@@ -44,16 +44,16 @@ and the relative path to the specification:
 .. swagger-plugin:: path/to/spec.yaml
 ```
 
-The spec is automatically copied into the `html_static_path`.
+The spec is automatically copied into the `_static` build output directory.
 
 The directive supports the following options
 
-* `id`: specifies an unique id for the specifiction per page (see below)
-* `full-page`: if set, all other content on the page is dropped and only the swagger part is rendered
-* `page-title`: the name of the HTML page if `full-page` is used
-* `swagger-options`: JSON string which is passed to swagger to enable additional options as described
-    [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md)
-
+* `id`: specifies an unique ID for the specification per page (see below)
+* `full-page`: if set, all other content on the page is dropped and only the Swagger part is rendered
+* `page-title`: the name of the HTML page if `full-page` is specified
+* `swagger-options`: JSON string that is passed to Swagger to enable additional options as described
+    on the [configuration](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md)
+    page of the Swagger documentation.
 
 By default, the directive creates a `<div>` element with the ID `swagger-ui-container`.
 If you put more than one `swagger-plugin` directive in a file, specify unique IDs:
