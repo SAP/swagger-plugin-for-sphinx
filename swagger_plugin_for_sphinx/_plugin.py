@@ -42,7 +42,7 @@ class SwaggerPluginDirective(SphinxDirective):
         configs = metadata.setdefault("swagger_plugin", [])
         # The static dir is set during builder init and not available from a variable or function.
         # https://github.com/sphinx-doc/sphinx/blob/master/sphinx/builders/html/__init__.py#L137
-        static_dir = Path(app.builder.outdir / "_static")
+        static_dir = Path(app.builder.outdir).joinpath("_static")
         path_offset = (
             1
             if app.builder.name == "dirhtml" and app.env.docname.split("/") != ["index"]
@@ -67,8 +67,8 @@ class SwaggerPluginDirective(SphinxDirective):
 
         # Preserve the source directory structure to avoid name collisions.
         outfile = static_dir.joinpath(relpath)
-        ensuredir(outfile.parent)
-        copyfile(spec, outfile)
+        ensuredir(str(outfile.parent))
+        copyfile(str(spec), str(outfile))
 
         # The range - 1 is to skip the RST or MD document itself.
         url_path = (
