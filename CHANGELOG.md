@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.1.0
+
+* Refactored copying the specification to the HTML output and
+  referencing the path to the specification in the HTML page.
+* Preserves the source directory structure like `docs/api/foo/openapi.yaml`
+  and `docs/api/bar/openapi.yaml` so that different files can use
+  the same file name.
+
 ## 5.0.3
 
 * Fixed an issue causing a spec to be linked incorrectly when the `dirhtml` builder is used.
