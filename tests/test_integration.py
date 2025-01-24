@@ -48,6 +48,67 @@ def test_basic() -> None:
 
 
 @pytest.mark.integration
+@pytest.mark.parametrize(
+    "builder,openapipage,petspage,rockspage",
+    [
+        ("html", "openapi", "stores/petstore", "stores/rockstore/rockstore"),
+        (
+            "dirhtml",
+            "openapi/index",
+            "stores/petstore/index",
+            "stores/rockstore/rockstore/index",
+        ),
+    ],
+)
+def test_extension(
+    builder: str, openapipage: str, petspage: str, rockspage: str
+) -> None:
+    """Test referencing specifications from a variety of directories."""
+    shutil.rmtree("tests/test_subdirs/_build", ignore_errors=True)
+    subprocess.run(
+        [
+            "sphinx-build",
+            "-b",
+            builder,
+            "tests/test_subdirs",
+            "tests/test_subdirs/_build",
+        ],
+        check=True,
+    )
+
+    options = webdriver.ChromeOptions()
+    options.add_argument("--ignore-certificate-errors")
+
+    with (
+        webdriver.Remote("http://localhost:4444", options=options) as browser,
+        subprocess.Popen(
+            [
+                "python",
+                "-m",
+                "http.server",
+                "--directory",
+                "tests/test_subdirs/_build/",
+            ]
+        ) as popen,
+    ):
+        time.sleep(5)
+        try:
+            _check_page_title(browser, openapipage, ["Swagger Petstore in Main"])
+            _check_page_title(
+                browser,
+                petspage,
+                ["Swagger Petstore in Specs", "Swagger Petstore in Samedir"],
+            )
+            _check_page_title(
+                browser,
+                rockspage,
+                ["Swagger Rockstore in Specs", "Swagger Petstore in Childdir"],
+            )
+        finally:
+            popen.terminate()
+
+
+@pytest.mark.integration
 def test_dirhtml() -> None:
     """Test a dirhtml scenario."""
     shutil.rmtree("tests/test_data/_build", ignore_errors=True)
