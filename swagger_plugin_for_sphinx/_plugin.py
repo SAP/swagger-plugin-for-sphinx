@@ -40,8 +40,8 @@ class SwaggerPluginDirective(SphinxDirective):
         app: Sphinx = self.state.document.settings.env.app
         metadata = self.env.metadata[self.env.docname]
         configs = metadata.setdefault("swagger_plugin", [])
-        # The static dir is set during builder init and not available from a variable or function.
-        # https://github.com/sphinx-doc/sphinx/blob/master/sphinx/builders/html/__init__.py#L137
+        # The static dir is created by Sphinx and is not available from a variable or function.
+        # https://github.com/sphinx-doc/sphinx/blob/v8.1.3/sphinx/builders/html/__init__.py#L897
         static_dir = Path(app.builder.outdir).joinpath("_static")
         path_offset = (
             1

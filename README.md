@@ -52,7 +52,7 @@ The directive supports the following options
 * `full-page`: if set, all other content on the page is dropped and only the Swagger part is rendered
 * `page-title`: the name of the HTML page if `full-page` is specified
 * `swagger-options`: JSON string that is passed to Swagger to enable additional options as described
-    on the [configuration](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/configuration.md)
+    on the [configuration](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/)
     page of the Swagger documentation.
 
 By default, the directive creates a `<div>` element with the ID `swagger-ui-container`.
