@@ -140,4 +140,4 @@ cython_debug/
 .history
 .ionide
 
-tests/test_data/_build/
+tests/*/_build/
