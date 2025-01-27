@@ -99,6 +99,7 @@ disable = [
     "suppressed-message",
     # disable too-many checks
     "too-many-positional-arguments",
+    "too-many-locals",
 ]
 
 [tool.pylint.reports]
