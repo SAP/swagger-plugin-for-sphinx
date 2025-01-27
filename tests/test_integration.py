@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import subprocess
 import time
+from contextlib import ExitStack
 from pathlib import Path
+from typing import Callable, Iterable, Iterator
 
 import pytest
 from selenium import webdriver
@@ -18,37 +20,52 @@ def build_dir(tmp_path: Path) -> str:
     return str(tmp_path / "_build")
 
 
-@pytest.mark.integration
-def test_basic(build_dir: str) -> None:
-    """Test a basic scenario."""
-    subprocess.run(["sphinx-build", "tests/test_data", build_dir], check=True)
+HostBrowser = Callable[[str, Iterable[str]], webdriver.Remote]
 
-    options = webdriver.ChromeOptions()
-    options.add_argument("--ignore-certificate-errors")
 
-    with (
-        webdriver.Remote("http://localhost:4444", options=options) as browser,
-        subprocess.Popen(
-            [
-                "python",
-                "-m",
-                "http.server",
-                "--directory",
-                build_dir,
-            ]
-        ) as popen,
-    ):
+@pytest.fixture(name="host_browser")
+def build_and_host_docs(build_dir: str) -> Iterator[HostBrowser]:
+    """Build and host the documentation."""
+    exit_stack = ExitStack()
+    popen: subprocess.Popen[bytes] | None = None
+
+    def _inner(source_dir: str, sphinx_options: Iterable[str]) -> webdriver.Remote:
+        nonlocal popen
+
+        subprocess.run(
+            ["sphinx-build", *sphinx_options, source_dir, build_dir], check=True
+        )
+
+        options = webdriver.ChromeOptions()
+        options.add_argument("--ignore-certificate-errors")
+
+        browser = exit_stack.enter_context(
+            webdriver.Remote("http://localhost:4444", options=options)
+        )
+        popen = exit_stack.enter_context(
+            subprocess.Popen(["python", "-m", "http.server", "--directory", build_dir])
+        )
         time.sleep(5)
-        try:
-            _check_page_title(browser, "openapi", ["Swagger Petstore in Main"])
-            _check_page_title(
-                browser,
-                "subfolder/p1",
-                ["Swagger Petstore in Subfolder", "Swagger Petstore in Main"],
-            )
-            _check_page_title(browser, "subfolder/p2", ["Swagger Petstore in Specs"])
-        finally:
-            popen.terminate()
+        return browser  # type: ignore[no-any-return]
+
+    yield _inner
+
+    if popen:
+        popen.terminate()
+    exit_stack.close()
+
+
+@pytest.mark.integration
+def test_basic(host_browser: HostBrowser) -> None:
+    """Test a basic scenario."""
+    browser = host_browser("tests/test_data", [])
+    _check_page_title(browser, "openapi", ["Swagger Petstore in Main"])
+    _check_page_title(
+        browser,
+        "subfolder/p1",
+        ["Swagger Petstore in Subfolder", "Swagger Petstore in Main"],
+    )
+    _check_page_title(browser, "subfolder/p2", ["Swagger Petstore in Specs"])
 
 
 @pytest.mark.integration
@@ -65,88 +82,40 @@ def test_basic(build_dir: str) -> None:
     ],
 )
 def test_extension(
-    builder: str, openapipage: str, petspage: str, rockspage: str, build_dir: str
+    builder: str,
+    openapipage: str,
+    petspage: str,
+    rockspage: str,
+    host_browser: HostBrowser,
 ) -> None:
     """Test referencing specifications from a variety of directories."""
-    subprocess.run(
-        [
-            "sphinx-build",
-            "-b",
-            builder,
-            "tests/test_subdirs",
-            build_dir,
-        ],
-        check=True,
+    browser = host_browser("tests/test_subdirs", ["-b", builder])
+
+    _check_page_title(browser, openapipage, ["Swagger Petstore in Main"])
+    _check_page_title(
+        browser,
+        petspage,
+        ["Swagger Petstore in Specs", "Swagger Petstore in Samedir"],
     )
-
-    options = webdriver.ChromeOptions()
-    options.add_argument("--ignore-certificate-errors")
-
-    with (
-        webdriver.Remote("http://localhost:4444", options=options) as browser,
-        subprocess.Popen(
-            [
-                "python",
-                "-m",
-                "http.server",
-                "--directory",
-                build_dir,
-            ]
-        ) as popen,
-    ):
-        time.sleep(5)
-        try:
-            _check_page_title(browser, openapipage, ["Swagger Petstore in Main"])
-            _check_page_title(
-                browser,
-                petspage,
-                ["Swagger Petstore in Specs", "Swagger Petstore in Samedir"],
-            )
-            _check_page_title(
-                browser,
-                rockspage,
-                ["Swagger Rockstore in Specs", "Swagger Petstore in Childdir"],
-            )
-        finally:
-            popen.terminate()
+    _check_page_title(
+        browser,
+        rockspage,
+        ["Swagger Rockstore in Specs", "Swagger Petstore in Childdir"],
+    )
 
 
 @pytest.mark.integration
-def test_dirhtml(build_dir: str) -> None:
+def test_dirhtml(host_browser: HostBrowser) -> None:
     """Test a dirhtml scenario."""
-    subprocess.run(
-        ["sphinx-build", "-M", "dirhtml", "tests/test_data", build_dir],
-        check=True,
+    browser = host_browser("tests/test_data", ["-b", "dirhtml"])
+
+    _check_page_title_dirhtml(browser, "openapi", ["Swagger Petstore in Main"])
+    _check_page_title_dirhtml(
+        browser,
+        "subfolder/p1",
+        ["Swagger Petstore in Subfolder", "Swagger Petstore in Main"],
     )
-
-    options = webdriver.ChromeOptions()
-    options.add_argument("--ignore-certificate-errors")
-
-    with (
-        webdriver.Remote("http://localhost:4444", options=options) as browser,
-        subprocess.Popen(
-            [
-                "python",
-                "-m",
-                "http.server",
-                "--directory",
-                f"{build_dir}/dirhtml",
-            ]
-        ) as popen,
-    ):
-        time.sleep(5)
-        try:
-            _check_page_title_dirhtml(browser, "openapi", ["Swagger Petstore in Main"])
-            _check_page_title_dirhtml(
-                browser,
-                "subfolder/p1",
-                ["Swagger Petstore in Subfolder", "Swagger Petstore in Main"],
-            )
-            _check_page_title_dirhtml(
-                browser, "subfolder/p2", ["Swagger Petstore in Specs"]
-            )
-        finally:
-            popen.terminate()
+    _check_page_title_dirhtml(browser, "subfolder/p2", ["Swagger Petstore in Specs"])
 
 
 def _check_page_title(
