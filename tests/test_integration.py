@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 """Integration tests."""
 
 from __future__ import annotations
