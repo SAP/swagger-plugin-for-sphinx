@@ -2,22 +2,25 @@
 
 from __future__ import annotations
 
-import shutil
 import subprocess
 import time
+from pathlib import Path
 
 import pytest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 
+@pytest.fixture
+def build_dir(tmp_path: Path) -> str:
+    """Return the build directory."""
+    return str(tmp_path / "_build")
+
+
 @pytest.mark.integration
-def test_basic() -> None:
+def test_basic(build_dir: str) -> None:
     """Test a basic scenario."""
-    shutil.rmtree("tests/test_data/_build", ignore_errors=True)
-    subprocess.run(
-        ["sphinx-build", "tests/test_data", "tests/test_data/_build"], check=True
-    )
+    subprocess.run(["sphinx-build", "tests/test_data", build_dir], check=True)
 
     options = webdriver.ChromeOptions()
     options.add_argument("--ignore-certificate-errors")
@@ -30,7 +33,7 @@ def test_basic() -> None:
                 "-m",
                 "http.server",
                 "--directory",
-                "tests/test_data/_build/",
+                build_dir,
             ]
         ) as popen,
     ):
@@ -61,17 +64,16 @@ def test_basic() -> None:
     ],
 )
 def test_extension(
-    builder: str, openapipage: str, petspage: str, rockspage: str
+    builder: str, openapipage: str, petspage: str, rockspage: str, build_dir: str
 ) -> None:
     """Test referencing specifications from a variety of directories."""
-    shutil.rmtree("tests/test_subdirs/_build", ignore_errors=True)
     subprocess.run(
         [
             "sphinx-build",
             "-b",
             builder,
             "tests/test_subdirs",
-            "tests/test_subdirs/_build",
+            build_dir,
         ],
         check=True,
     )
@@ -87,7 +89,7 @@ def test_extension(
                 "-m",
                 "http.server",
                 "--directory",
-                "tests/test_subdirs/_build/",
+                build_dir,
             ]
         ) as popen,
     ):
@@ -109,11 +111,10 @@ def test_extension(
 
 
 @pytest.mark.integration
-def test_dirhtml() -> None:
+def test_dirhtml(build_dir: str) -> None:
     """Test a dirhtml scenario."""
-    shutil.rmtree("tests/test_data/_build", ignore_errors=True)
     subprocess.run(
-        ["sphinx-build", "-M", "dirhtml", "tests/test_data", "tests/test_data/_build"],
+        ["sphinx-build", "-M", "dirhtml", "tests/test_data", build_dir],
         check=True,
     )
 
@@ -128,7 +129,7 @@ def test_dirhtml() -> None:
                 "-m",
                 "http.server",
                 "--directory",
-                "tests/test_data/_build/dirhtml",
+                f"{build_dir}/dirhtml",
             ]
         ) as popen,
     ):
