@@ -51,7 +51,7 @@ dev = [
 test = [
     "pytest==8.3.5",
     "coverage==7.6.12",
-    "diff-cover==9.2.3",
+    "diff-cover==9.2.4",
     "pytest-cov==6.0.0",
     "selenium==4.29.0",
 ]
