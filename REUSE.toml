@@ -1,0 +1,10 @@
+version = 1
+SPDX-PackageName = "swagger-plugin-for-sphinx"
+SPDX-PackageSupplier = "kai.mueller01@sap.com"
+SPDX-PackageDownloadLocation = "https://github.com/SAP/swagger-plugin-for-sphinx"
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 SAP SE or an SAP affiliate company and swagger-plugin-for-sphinx contributors"
+SPDX-License-Identifier = "Apache-2.0"
