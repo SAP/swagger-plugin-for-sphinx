@@ -14,7 +14,6 @@ classifiers = [
     "Environment :: Plugins",
     "Framework :: Sphinx :: Extension",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: Apache Software License",
     "Natural Language :: English",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
@@ -30,9 +29,8 @@ classifiers = [
 ]
 requires-python = ">=3.9,<4"
 dependencies = ["sphinx>=6.0,<9", "jinja2~=3.0", "docutils"]
-
-[project.license]
-text = "Apache-2.0"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
 
 [project.urls]
 "Issue Tracker" = "https://github.com/SAP/swagger-plugin-for-sphinx/issues"
