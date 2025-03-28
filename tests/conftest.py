@@ -1,3 +1,5 @@
+"""Main conftest."""
+
 from __future__ import annotations
 
 import shutil
@@ -9,6 +11,7 @@ import yaml
 
 @pytest.fixture
 def testdata(tmp_path: Path) -> Path:
+    """Generate test data."""
     root = Path("tests/testdata")
     spec = Path("tests/openapi.yml")
 

@@ -245,7 +245,6 @@ def test_custom_urls(
 
 
 @pytest.mark.parametrize("builder", ["html", "dirhtml"])
-# pylint: disable=R0914
 def test_subdirs(tmp_path: Path, builder: str) -> None:
     docs = tmp_path / "docs"
     subdir = docs / "subdir"
