@@ -1,18 +1,18 @@
 openapi: "3.0.0"
 info:
   version: 1.0.0
-  title: Swagger Rockstore in Specs
+  title: Swagger Petstore
   license:
     name: MIT
 servers:
-  - url: http://rockstore.swagger.io/v1
+  - url: http://petstore.swagger.io/v1
 paths:
-  /rocks:
+  /pets:
     get:
-      summary: List all rocks
-      operationId: listRocks
+      summary: List all pets
+      operationId: listPets
       tags:
-        - rocks
+        - pets
       parameters:
         - name: limit
           in: query
@@ -24,7 +24,7 @@ paths:
             format: int32
       responses:
         '200':
-          description: A paged array of rocks
+          description: A paged array of pets
           headers:
             x-next:
               description: A link to the next page of responses
@@ -33,7 +33,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Rocks"
+                $ref: "#/components/schemas/Pets"
         default:
           description: unexpected error
           content:
@@ -41,15 +41,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
-      summary: Create a rock
-      operationId: createRocks
+      summary: Create a pet
+      operationId: createPets
       tags:
-        - rocks
+        - pets
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Rock'
+              $ref: '#/components/schemas/Pet'
         required: true
       responses:
         '201':
@@ -60,17 +60,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /rocks/{petId}:
+  /pets/{petId}:
     get:
-      summary: Info for a specific rock
-      operationId: showRockById
+      summary: Info for a specific pet
+      operationId: showPetById
       tags:
-        - rocks
+        - pets
       parameters:
-        - name: rockId
+        - name: petId
           in: path
           required: true
-          description: The id of the rock to retrieve
+          description: The id of the pet to retrieve
           schema:
             type: string
       responses:
@@ -79,7 +79,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Rock"
+                $ref: "#/components/schemas/Pet"
         default:
           description: unexpected error
           content:
@@ -88,7 +88,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 components:
   schemas:
-    Rock:
+    Pet:
       type: object
       required:
         - id
@@ -101,11 +101,11 @@ components:
           type: string
         tag:
           type: string
-    Rocks:
+    Pets:
       type: array
       maxItems: 100
       items:
-        $ref: "#/components/schemas/Rock"
+        $ref: "#/components/schemas/Pet"
     Error:
       type: object
       required:

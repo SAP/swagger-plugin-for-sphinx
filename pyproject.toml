@@ -47,6 +47,7 @@ dev = [
     "mypy==1.15.0",
     "types-docutils==0.21.0.20241128",
     "yesqa==1.5.0",
+    "types-PyYAML==6.0.12.20250326",
 ]
 test = [
     "pytest==8.3.5",
@@ -54,6 +55,7 @@ test = [
     "diff-cover==9.2.4",
     "pytest-cov==6.0.0",
     "selenium==4.30.0",
+    "pyyaml==6.0.2",
 ]
 
 [tool.setuptools.packages.find]
@@ -99,6 +101,7 @@ disable = [
     "suppressed-message",
     # disable too-many checks
     "too-many-positional-arguments",
+    "too-many-locals",
 ]
 
 [tool.pylint.reports]

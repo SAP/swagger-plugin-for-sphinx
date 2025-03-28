@@ -20,20 +20,20 @@ def build_dir(tmp_path: Path) -> str:
     return str(tmp_path / "_build")
 
 
-HostBrowser = Callable[[str, Iterable[str]], webdriver.Remote]
+HostBrowser = Callable[[Iterable[str]], webdriver.Remote]
 
 
 @pytest.fixture(name="host_browser")
-def build_and_host_docs(build_dir: str) -> Iterator[HostBrowser]:
+def build_and_host_docs(build_dir: str, testdata: Path) -> Iterator[HostBrowser]:
     """Build and host the documentation."""
     exit_stack = ExitStack()
     popen: subprocess.Popen[bytes] | None = None
 
-    def _inner(source_dir: str, sphinx_options: Iterable[str]) -> webdriver.Remote:
+    def _inner(sphinx_options: Iterable[str]) -> webdriver.Remote:
         nonlocal popen
 
         subprocess.run(
-            ["sphinx-build", *sphinx_options, source_dir, build_dir], check=True
+            ["sphinx-build", *sphinx_options, str(testdata), build_dir], check=True
         )
 
         options = webdriver.ChromeOptions()
@@ -55,10 +55,28 @@ def build_and_host_docs(build_dir: str) -> Iterator[HostBrowser]:
     exit_stack.close()
 
 
+def _check_page_title(
+    browser: webdriver.Remote, page: str, expected_title: list[str]
+) -> None:
+    browser.get(f"http://localhost:8000/{page}.html")
+    elements = browser.find_elements(By.CLASS_NAME, "title")
+    titles = [element.text.split("\n")[0] for element in elements]
+    assert titles == expected_title
+
+
+def _check_page_title_dirhtml(
+    browser: webdriver.Remote, page: str, expected_title: list[str]
+) -> None:
+    browser.get(f"http://localhost:8000/{page}/")
+    elements = browser.find_elements(By.CLASS_NAME, "title")
+    titles = [element.text.split("\n")[0] for element in elements]
+    assert titles == expected_title
+
+
 @pytest.mark.integration
 def test_basic(host_browser: HostBrowser) -> None:
     """Test a basic scenario."""
-    browser = host_browser("tests/test_data", [])
+    browser = host_browser([])
     _check_page_title(browser, "openapi", ["Swagger Petstore in Main"])
     _check_page_title(
         browser,
@@ -89,7 +107,7 @@ def test_extension(
     host_browser: HostBrowser,
 ) -> None:
     """Test referencing specifications from a variety of directories."""
-    browser = host_browser("tests/test_subdirs", ["-b", builder])
+    browser = host_browser(["-b", builder])
 
     _check_page_title(browser, openapipage, ["Swagger Petstore in Main"])
     _check_page_title(
@@ -107,7 +125,7 @@ def test_extension(
 @pytest.mark.integration
 def test_dirhtml(host_browser: HostBrowser) -> None:
     """Test a dirhtml scenario."""
-    browser = host_browser("tests/test_data", ["-b", "dirhtml"])
+    browser = host_browser(["-b", "dirhtml"])
 
     _check_page_title_dirhtml(browser, "openapi", ["Swagger Petstore in Main"])
     _check_page_title_dirhtml(
@@ -116,21 +134,3 @@ def test_dirhtml(host_browser: HostBrowser) -> None:
         ["Swagger Petstore in Subfolder", "Swagger Petstore in Main"],
     )
     _check_page_title_dirhtml(browser, "subfolder/p2", ["Swagger Petstore in Specs"])
-
-
-def _check_page_title(
-    browser: webdriver.Remote, page: str, expected_title: list[str]
-) -> None:
-    browser.get(f"http://localhost:8000/{page}.html")
-    elements = browser.find_elements(By.CLASS_NAME, "title")
-    titles = [element.text.split("\n")[0] for element in elements]
-    assert titles == expected_title
-
-
-def _check_page_title_dirhtml(
-    browser: webdriver.Remote, page: str, expected_title: list[str]
-) -> None:
-    browser.get(f"http://localhost:8000/{page}/")
-    elements = browser.find_elements(By.CLASS_NAME, "title")
-    titles = [element.text.split("\n")[0] for element in elements]
-    assert titles == expected_title
