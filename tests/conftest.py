@@ -12,7 +12,7 @@ import yaml
 @pytest.fixture
 def testdata(tmp_path: Path) -> Path:
     """Generate test data."""
-    root = Path("tests/testdata")
+    root = Path("tests/test_data")
     spec = Path("tests/openapi.yml")
 
     test_folder = tmp_path / "testdata"
