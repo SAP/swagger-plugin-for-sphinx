@@ -130,7 +130,6 @@ def _check_page_title(
 def _check_page_title_dirhtml(
     browser: webdriver.Remote, page: str, expected_title: list[str]
 ) -> None:
-    print(page)
     browser.get(f"http://localhost:8000/{page}/")
     elements = browser.find_elements(By.CLASS_NAME, "title")
     titles = [element.text.split("\n")[0] for element in elements]
