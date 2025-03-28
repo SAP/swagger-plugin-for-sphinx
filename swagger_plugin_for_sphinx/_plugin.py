@@ -63,7 +63,7 @@ class SwaggerPluginDirective(SphinxDirective):
                 f"file not found: {self.arguments[0]}."
             )
 
-        logger.info(f"Adding to _static output path: {spec}.")
+        logger.info("Adding to _static output path: %s.", spec)
 
         # Preserve the source directory structure to avoid name collisions.
         outfile = static_dir.joinpath(relpath)
@@ -140,13 +140,14 @@ def render(app: Sphinx) -> Iterator[tuple[Any, ...]]:
         with template_path.open(encoding="utf-8") as handle:
             template = jinja2.Template(handle.read())
 
-        params = {}
-        params["options"] = config["swagger_options"]
-        params["css_uri"] = app.config.swagger_css_uri
-        params["bundle_uri"] = app.config.swagger_bundle_uri
-        params["present_uri"] = app.config.swagger_present_uri
-        params["page_title"] = config["page_title"]
-        params["url_path"] = config["url_path"]
+        params = {
+            "options": config["swagger_options"],
+            "css_uri": app.config.swagger_css_uri,
+            "bundle_uri": app.config.swagger_bundle_uri,
+            "present_uri": app.config.swagger_present_uri,
+            "page_title": config["page_title"],
+            "url_path": config["url_path"],
+        }
 
         yield pagename, params, template
 
