@@ -54,6 +54,7 @@ test = [
     "diff-cover==9.2.4",
     "pytest-cov==6.0.0",
     "selenium==4.30.0",
+    "pyyaml==6.0.2",
 ]
 
 [tool.setuptools.packages.find]
