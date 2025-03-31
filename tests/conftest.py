@@ -16,19 +16,23 @@ def testdata(tmp_path: Path) -> Path:
     spec = Path("tests/openapi.yml")
 
     test_folder = tmp_path / "testdata"
-    test_folder.mkdir()
     shutil.copytree(root, test_folder)
 
     locations = [
-        (test_folder / "openapi_main.yaml", "Swagger Petstore in Main"),
-        (test_folder / "specs/openapi_specs.yaml", "Swagger Petstore in Specs"),
+        (test_folder / "openapi_main.yml", "Swagger Petstore in Main"),
+        (test_folder / "specs/openapi_specs.yml", "Swagger Petstore in Specs"),
+        (test_folder / "specs/petstore/openapi_specs.yml", "Swagger Petstore in Specs"),
         (
-            test_folder / "subfolder/openapi_subfolder.yaml",
+            test_folder / "specs/rockstore/openapi_specs.yml",
+            "Swagger Rockstore in Specs",
+        ),
+        (
+            test_folder / "subfolder/openapi_subfolder.yml",
             "Swagger Petstore in Subfolder",
         ),
-        (test_folder / "stores/openapi_samedir.yaml", "Swagger Petstore in Samedir"),
+        (test_folder / "stores/openapi_samedir.yml", "Swagger Petstore in Samedir"),
         (
-            test_folder / "stores/rockstore/specs/openapi_childdir.yaml",
+            test_folder / "stores/rockstore/specs/openapi_childdir.yml",
             "Swagger Petstore in Childdir",
         ),
     ]
