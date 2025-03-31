@@ -8,3 +8,5 @@ Sample Docu
    openapi
    subfolder/p1
    subfolder/p2
+   stores/petstore
+   stores/rockstore/rockstore
