@@ -56,7 +56,7 @@ jobs:
         run: "pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml tests/"
       - name: run diff-cover
         run: "diff-cover --config-file pyproject.toml coverage.xml"
-        - name: Rename coverage file
+      - name: Rename coverage file
         run: |
           UUID=$(uuidgen)
           echo "UUID=${UUID}" >> $GITHUB_ENV
