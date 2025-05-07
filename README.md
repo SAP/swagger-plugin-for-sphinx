@@ -1,5 +1,6 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP/swagger-plugin-for-sphinx)](https://api.reuse.software/info/github.com/SAP/swagger-plugin-for-sphinx)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Coverage Status](https://coveralls.io/repos/github/SAP/swagger-plugin-for-sphinx/badge.svg)](https://coveralls.io/github/SAP/swagger-plugin-for-sphinx)
 
 # Swagger Plugin for Sphinx
 
