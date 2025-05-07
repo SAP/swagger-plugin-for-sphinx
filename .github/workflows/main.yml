@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+  pull-requests: write
+
 jobs:
   ci-pre-commit:
     runs-on: ubuntu-latest
@@ -47,6 +53,47 @@ jobs:
       - name: Wait for selenium container
         run: "while ! curl -sSL http://localhost:4444/wd/hub/status | jq .value.ready | grep true; do sleep 1; done"
       - name: run tests (with coverage)
-        run: "pytest --cov swagger_plugin_for_sphinx --cov-report html --cov-report xml tests/"
+        run: "pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml tests/"
       - name: run diff-cover
         run: "diff-cover --config-file pyproject.toml coverage.xml"
+        - name: Rename coverage file
+        run: |
+          UUID=$(uuidgen)
+          echo "UUID=${UUID}" >> $GITHUB_ENV
+          mv .coverage .coverage.${UUID}
+      - name: upload coverage file
+        uses: actions/upload-artifact@v4
+        with:
+          name: .coverage.${{ env.UUID }}
+          path: .coverage.${{ env.UUID }}
+          if-no-files-found: error
+          include-hidden-files: true
+  ci-coverage-reporting:
+    needs: ci-test
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download coverage files
+        uses: actions/download-artifact@v4
+        with:
+          merge-multiple: true
+          path: coverage_files
+      - name: Prepare coverage files
+        run: |
+          pip install coverage
+          cd coverage_files
+          coverage combine
+          mv .coverage ../.coverage
+          cd ..
+          coverage xml
+      - name: Upload to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: coverage.xml
