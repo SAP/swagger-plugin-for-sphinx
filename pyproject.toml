@@ -45,7 +45,7 @@ dev = [
     "flake8==7.2.0",
     "flake8-tergeo==25.5.22.0",
     "mypy==1.15.0",
-    "types-docutils==0.21.0.20250516",
+    "types-docutils==0.21.0.20250526",
     "yesqa==1.5.0",
     "types-PyYAML==6.0.12.20250516",
 ]
