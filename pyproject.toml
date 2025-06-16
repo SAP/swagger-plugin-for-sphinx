@@ -43,7 +43,7 @@ dev = [
     "black==25.1.0",
     "isort==6.0.1",
     "flake8==7.2.0",
-    "flake8-tergeo==25.5.22.0",
+    "flake8-tergeo==25.6.11.0",
     "mypy==1.16.0",
     "types-docutils==0.21.0.20250604",
     "yesqa==1.5.0",
