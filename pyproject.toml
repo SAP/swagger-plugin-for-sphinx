@@ -50,7 +50,7 @@ dev = [
     "types-PyYAML==6.0.12.20250516",
 ]
 test = [
-    "pytest==8.4.0",
+    "pytest==8.4.1",
     "coverage==7.9.1",
     "diff-cover==9.4.0",
     "pytest-cov==6.2.1",
