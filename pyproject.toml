@@ -89,7 +89,7 @@ min-public-methods = 0
 
 [tool.pylint.master]
 max-line-length = 100
-py-version = [3, 8]
+py-version = [3, 9]
 
 [tool.pylint."messages control"]
 enable = ["all"]
