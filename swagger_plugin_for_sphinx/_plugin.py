@@ -15,6 +15,7 @@ from sphinx.errors import ExtensionError
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.osutil import copyfile, ensuredir
+from typing_extensions import override
 
 logger = logging.getLogger(__name__)
 _HERE = Path(__file__).parent.resolve()
@@ -36,6 +37,7 @@ class SwaggerPluginDirective(SphinxDirective):
     }
     has_content = False
 
+    @override
     def run(self) -> list[nodes.Node]:
         app: Sphinx = self.state.document.settings.env.app
         metadata = self.env.metadata[self.env.docname]
