@@ -12,10 +12,12 @@ ignore=
     W503,E203,
     # ignore !r recommendation
     FTB907,
+    # some things don't need a docstring
+    FTP306,
 per-file-ignores =
+    tests/*:FTP300,FTP301,FTP302,FTP303,FTP304
     tests/test_data/*:FTP040
     tests/test_subdirs/*:FTP040
-
 ftp-python-version = 3.9.0
 ftp-auto-manage-options = true
 ftp-pytest-parametrize-names-type = csv
