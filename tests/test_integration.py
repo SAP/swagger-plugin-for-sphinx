@@ -5,9 +5,10 @@ from __future__ import annotations
 
 import subprocess
 import time
+from collections.abc import Iterable, Iterator
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Callable, Iterable, Iterator
+from typing import Callable
 
 import pytest
 from selenium import webdriver
