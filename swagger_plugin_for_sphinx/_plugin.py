@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterator
 from importlib.metadata import version
 from pathlib import Path
-from typing import Any, Iterator
+from typing import Any
 
 import jinja2
 from docutils import nodes

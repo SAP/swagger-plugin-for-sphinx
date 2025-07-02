@@ -42,3 +42,9 @@ repos:
         entry: yesqa
         language: system
         types: [python]
+      - id: pyupgrade
+        name: pyupgrade
+        entry: pyupgrade
+        language: system
+        types: [python]
+        args: ["--py39-plus"]
