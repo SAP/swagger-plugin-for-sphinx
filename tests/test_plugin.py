@@ -247,6 +247,8 @@ def test_custom_urls(
 @pytest.mark.parametrize("builder", ["html", "dirhtml"])
 def test_subdirs(tmp_path: Path, builder: str) -> None:
     docs = tmp_path / "docs"
+    codedir = tmp_path / "code"  # Imitate copying spec from source.
+    codedir.mkdir(parents=True)
     subdir = docs / "subdir"
     subsubdir = subdir / "subdirtwo"
     subsubdir.mkdir(parents=True)
@@ -258,6 +260,7 @@ def test_subdirs(tmp_path: Path, builder: str) -> None:
     build.mkdir()
 
     spec = Path(__file__).parent / "openapi.yml"
+    shutil.copyfile(str(spec), str(codedir / "openapi.yaml"))
     shutil.copyfile(str(spec), str(speconedir / "openapi.yaml"))
     shutil.copyfile(str(spec), str(spectwodir / "openapi.yaml"))
 
@@ -278,7 +281,18 @@ def test_subdirs(tmp_path: Path, builder: str) -> None:
     )
     two = subsubdir / "two.rst"
     two.write_text(
-        "API Two\n=======\n\n.. swagger-plugin:: ../../api/two/yaml/openapi.yaml\n",
+        dedent(
+            """
+            API Two
+            =======
+
+            .. swagger-plugin:: ../../api/two/yaml/openapi.yaml
+               :id: from-docs
+
+            .. swagger-plugin:: ../../../code/openapi.yaml
+               :id: from-code
+            """
+        ),
         encoding="utf-8",
     )
 
@@ -303,8 +317,10 @@ def test_subdirs(tmp_path: Path, builder: str) -> None:
             build / "subdir" / "subdirtwo" / "two.html", encoding="utf-8"
         ) as file:
             html = file.read()
-            assert "#swagger-ui-container" in html
+            assert "#from-docs" in html
+            assert "#from-code" in html
             assert "../../_static/api/two/yaml/openapi.yaml" in html
+            assert "../../_static/dot-dot/code/openapi.yaml" in html
 
     if builder == "dirhtml":
         with open(build / "subdir" / "one" / "index.html", encoding="utf-8") as file:
@@ -316,3 +332,4 @@ def test_subdirs(tmp_path: Path, builder: str) -> None:
         ) as file:
             html = file.read()
             assert "../../../_static/api/two/yaml/openapi.yaml" in html
+            assert "../../../_static/dot-dot/code/openapi.yaml" in html

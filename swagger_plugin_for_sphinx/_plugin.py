@@ -59,6 +59,9 @@ class SwaggerPluginDirective(SphinxDirective):
             )
 
         relpath, abspath = self.env.relfn2path(self.arguments[0])
+        # Use dot-dot to address referencing specs from parents of the Sphinx source directory.
+        # Otherwise, the spec is copied to a parent of the output directory.
+        relpath = relpath.replace("..", "dot-dot")
         spec = Path(abspath).resolve()
         if not spec.exists():
             raise ExtensionError(
