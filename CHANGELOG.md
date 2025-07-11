@@ -1,5 +1,22 @@
 # Changelog
 
+## 5.1.1
+
+* Fixed a bug related to referencing a specification from a parent
+  directory of the Sphinx source directory, such as when documentation
+  is co-located with source code.
+
+  Before this fix, when a specification was several subdirectories
+  from the documentation, the specification could be copied to
+  a parent directory of the build HTML output and prevent the display
+  of the specification.
+
+  With this fix, deeply nested specifications (`../../../../openapi.yaml`)
+  have the `..` values that are parents of the Sphinx source directory
+  replaced with the text `dot-dot`. This fix ensures that deeply
+  nested specifications are copied to a subdirectory of the `_static`
+  directory in the HTML output.
+
 ## 5.1.0
 
 * Refactored copying the specification to the HTML output and
