@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.1.2
+
+* Added missing dependency on `typing-extensions`
+
 ## 5.1.1
 
 * Fixed a bug related to referencing a specification from a parent
