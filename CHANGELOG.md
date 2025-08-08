@@ -4,6 +4,8 @@
 
 * Added missing dependency on `typing-extensions`
 
+* Pass the Swagger UI options also for inline rendering.
+
 ## 5.1.1
 
 * Fixed a bug related to referencing a specification from a parent
