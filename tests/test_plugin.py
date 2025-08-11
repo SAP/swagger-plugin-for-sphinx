@@ -157,8 +157,9 @@ def test_swagger_options(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     assert "sphinx" in html
     assert "https://cdn.jsdelivr.net" in html
     assert "_static/openapi.yaml" in html
-    assert '''var options = {...{'deepLinking': 1}};''' in html
+    assert """var options = {...{'deepLinking': 1}};""" in html
     assert html.count("SwaggerUIBundle(options)") == 1
+
 
 def test_swagger_plugin_directive_same_dir(
     sphinx_runner: SphinxRunner, tmp_path: Path
