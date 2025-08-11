@@ -133,11 +133,32 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     assert "#one" in html
     assert "_static/other.yaml" in html
     assert "#two" in html
-    assert html.count("window.ui = SwaggerUIBundle({") == 2
+    assert html.count("SwaggerUIBundle(options") == 2
     assert html.count("swagger-ui-bundle.js") == 1
 
     assert (tmp_path / "build" / "_static" / "openapi.yaml").exists()
     assert (tmp_path / "build" / "_static" / "other.yaml").exists()
+
+
+def test_swagger_options(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
+    contents = dedent(
+        """
+    API
+    ===
+
+    .. swagger-plugin:: openapi.yaml
+       :swagger-options: {"deepLinking": 1}
+
+    """
+    )
+    sphinx_runner(directive=contents)
+
+    html = read_api_html(tmp_path)
+    assert "sphinx" in html
+    assert "https://cdn.jsdelivr.net" in html
+    assert "_static/openapi.yaml" in html
+    assert """var options = {...{'deepLinking': 1}};""" in html
+    assert html.count("SwaggerUIBundle(options)") == 1
 
 
 def test_swagger_plugin_directive_same_dir(
