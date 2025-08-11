@@ -1,10 +1,12 @@
 # Changelog
 
+## 5.1.3
+
+* Pass the Swagger UI options also for inline rendering.
+
 ## 5.1.2
 
 * Added missing dependency on `typing-extensions`
-
-* Pass the Swagger UI options also for inline rendering.
 
 ## 5.1.1
 
