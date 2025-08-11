@@ -133,7 +133,7 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     assert "#one" in html
     assert "_static/other.yaml" in html
     assert "#two" in html
-    assert html.count("SwaggerUIBundle({") == 2
+    assert html.count("SwaggerUIBundle(options") == 2
     assert html.count("swagger-ui-bundle.js") == 1
 
     assert (tmp_path / "build" / "_static" / "openapi.yaml").exists()
