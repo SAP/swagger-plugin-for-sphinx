@@ -60,6 +60,7 @@ def _check_page_title(
     browser: webdriver.Remote, page: str, expected_title: list[str]
 ) -> None:
     browser.get(f"http://localhost:8000/{page}.html")
+    time.sleep(5)  # wait for page to load
     elements = browser.find_elements(By.CLASS_NAME, "title")
     titles = [element.text.split("\n")[0] for element in elements]
     assert titles == expected_title
@@ -69,6 +70,7 @@ def _check_page_title_dirhtml(
     browser: webdriver.Remote, page: str, expected_title: list[str]
 ) -> None:
     browser.get(f"http://localhost:8000/{page}/")
+    time.sleep(5)  # wait for page to load
     elements = browser.find_elements(By.CLASS_NAME, "title")
     titles = [element.text.split("\n")[0] for element in elements]
     assert titles == expected_title
