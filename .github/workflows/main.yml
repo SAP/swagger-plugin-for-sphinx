@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Install project
-        run: pip install ..group dev --group test -e .
+        run: pip install --group dev --group test -e .
       - name: run pre-commit
         run: "pre-commit run --all"
   ci-test:
