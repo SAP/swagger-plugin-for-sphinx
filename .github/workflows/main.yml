@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read
@@ -21,21 +21,21 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: '3.13'
       - name: Install project
         run: pip install --group dev --group test -e .
       - name: run pre-commit
-        run: "pre-commit run --all"
+        run: pre-commit run --all
   ci-test:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
-        sphinx-version: ["6.*", "7.*", "8.*"]
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+        sphinx-version: [6.*, 7.*, 8.*]
         exclude:
           # sphinx 8 does not support python 3.9
-          - sphinx-version: "8.*"
-            python-version: "3.9"
+          - sphinx-version: 8.*
+            python-version: '3.9'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,11 +51,11 @@ jobs:
       - name: setup selenium container
         run: docker run -d -p 4444:4444 -p 7900:7900 --network host --shm-size="2g" selenium/standalone-chrome:120.0
       - name: Wait for selenium container
-        run: "while ! curl -sSL http://localhost:4444/wd/hub/status | jq .value.ready | grep true; do sleep 1; done"
+        run: while ! curl -sSL http://localhost:4444/wd/hub/status | jq .value.ready | grep true; do sleep 1; done
       - name: run tests (with coverage)
-        run: "pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml tests/"
+        run: pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml tests/
       - name: run diff-cover
-        run: "diff-cover --config-file pyproject.toml coverage.xml"
+        run: diff-cover --config-file pyproject.toml coverage.xml
       - name: Rename coverage file
         run: |
           UUID=$(uuidgen)
@@ -78,7 +78,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: '3.13'
       - name: Download coverage files
         uses: actions/download-artifact@v4
         with:
