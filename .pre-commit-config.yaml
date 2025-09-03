@@ -51,4 +51,9 @@ repos:
         entry: pyupgrade
         language: system
         types: [python]
-        args: ["--py39-plus"]
+        args: [--py39-plus]
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.3
+    hooks:
+      - id: yamlfmt
+        args: [--mapping, '2', --sequence, '4', --offset, '2', --implicit_start]
