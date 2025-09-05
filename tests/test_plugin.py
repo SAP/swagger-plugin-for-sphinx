@@ -1,13 +1,11 @@
-# pylint: disable=missing-function-docstring,redefined-outer-name,too-many-arguments
-
 """Tests."""
 
 from __future__ import annotations
 
 import shutil
+from collections.abc import Callable
 from pathlib import Path
 from textwrap import dedent
-from typing import Callable
 
 import pytest
 from sphinx.application import Sphinx
