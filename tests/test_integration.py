@@ -1,14 +1,12 @@
-# pylint: disable=redefined-outer-name
 """Integration tests."""
 
 from __future__ import annotations
 
 import subprocess
 import time
-from collections.abc import Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 from contextlib import ExitStack
 from pathlib import Path
-from typing import Callable
 
 import pytest
 from selenium import webdriver
