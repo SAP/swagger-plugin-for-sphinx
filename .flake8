@@ -19,5 +19,13 @@ per-file-ignores =
     tests/test_data/*:FTP040
     tests/test_subdirs/*:FTP040
 ftp-python-version = 3.9.0
+ftp-pyproject-toml-file = pyproject.toml
 ftp-auto-manage-options = true
 ftp-pytest-parametrize-names-type = csv
+ftp-distribution-name = swagger-plugin-for-sphinx
+ftp-requirements-packages = tests,swagger_plugin_for_sphinx
+ftp-requirements-ignore-type-checking-block = true
+ftp-requirements-module-extra-mapping =
+    tests | *,
+ftp-requirements-mapping =
+    yaml:pyyaml
