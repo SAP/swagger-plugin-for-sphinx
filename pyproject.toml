@@ -66,6 +66,7 @@ dev = [
     "types-PyYAML==6.0.12.20250822",
     "pyupgrade==3.20.0",
     "toml-sort==0.24.2",
+    "pylint-per-file-ignores==2.0.3",
 ]
 test = [
     "pytest==8.4.1",
@@ -122,11 +123,26 @@ no-docstring-rgx = "^_"
 min-public-methods = 0
 
 [tool.pylint.master]
-max-line-length = 100
-py-version = [
-    3,
-    9,
+load-plugins = [
+    "pylint_per_file_ignores",
+    "pylint.extensions.bad_builtin",
+    "pylint.extensions.check_elif",
+    "pylint.extensions.code_style",
+    "pylint.extensions.comparison_placement",
+    "pylint.extensions.confusing_elif",
+    "pylint.extensions.dict_init_mutate",
+    "pylint.extensions.docparams",
+    "pylint.extensions.docstyle",
+    "pylint.extensions.empty_comment",
+    "pylint.extensions.eq_without_hash",
+    "pylint.extensions.for_any_all",
+    "pylint.extensions.overlapping_exceptions",
+    "pylint.extensions.private_import",
+    "pylint.extensions.set_membership",
+    "pylint.extensions.typing",
 ]
+max-line-length = 100
+py-version = [3, 9]
 
 [tool.pylint."messages control"]
 disable = [
@@ -135,10 +151,11 @@ disable = [
     "suppressed-message",
     "too-many-positional-arguments",
     "too-many-locals",
+    "too-many-arguments",
+    "consider-using-assignment-expr",
 ]
-enable = [
-    "all",
-]
+enable = ["all"]
+per-file-ignores = "tests/**:missing-function-docstring,missing-class-docstring,redefined-outer-name,protected-access,unused-argument,import-private-name"
 
 [tool.pylint.reports]
 reports = false
