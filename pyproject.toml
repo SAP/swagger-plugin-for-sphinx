@@ -69,7 +69,7 @@ dev = [
     "pylint-per-file-ignores==2.0.3",
 ]
 test = [
-    "pytest==8.4.1",
+    "pytest==8.4.2",
     "coverage==7.10.6",
     "diff-cover==9.6.0",
     "pytest-cov==6.3.0",
