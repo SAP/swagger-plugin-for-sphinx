@@ -21,11 +21,15 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version-file: .python-version
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version-file: pyproject.toml
       - name: Install project
-        run: pip install --group dev --group test -e .
+        run: uv sync --all-groups
       - name: run pre-commit
-        run: pre-commit run --all
+        run: uv run pre-commit run --all
   ci-test:
     strategy:
       fail-fast: false
@@ -44,18 +48,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version-file: pyproject.toml
       - name: Install project
-        run: pip install --group test -e .
+        run: uv sync --group test
       - name: Install sphinx
-        run: pip install sphinx==${{ matrix.sphinx-version }}
+        run: uv pip install sphinx==${{ matrix.sphinx-version }}
       - name: setup selenium container
         run: docker run -d -p 4444:4444 -p 7900:7900 --network host --shm-size="2g" selenium/standalone-chrome:120.0
       - name: Wait for selenium container
         run: while ! curl -sSL http://localhost:4444/wd/hub/status | jq .value.ready | grep true; do sleep 1; done
       - name: run tests (with coverage)
-        run: pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml tests/
+        run: uv run  pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml tests/
       - name: run diff-cover
-        run: diff-cover --config-file pyproject.toml coverage.xml
+        run: uv run  diff-cover --config-file pyproject.toml coverage.xml
       - name: Rename coverage file
         run: |
           UUID=$(uuidgen)
@@ -78,20 +86,25 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version-file: .python-version
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version-file: pyproject.toml
       - name: Download coverage files
         uses: actions/download-artifact@v4
         with:
           merge-multiple: true
           path: coverage_files
+      - name: Install project
+        run: uv sync --all-groups
       - name: Prepare coverage files
         run: |
-          pip install coverage
           cd coverage_files
-          coverage combine
+          uv run coverage combine
           mv .coverage ../.coverage
           cd ..
-          coverage xml
+          uv run coverage xml
       - name: Upload to Coveralls
         uses: coverallsapp/github-action@v2
         with:
