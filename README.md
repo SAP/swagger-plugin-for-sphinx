@@ -67,6 +67,12 @@ If you put more than one `swagger-plugin` directive in a file, specify unique ID
    :id: spec-two
 ```
 
+## Development
+This project uses `uv`.
+To setup a venv for development use
+`python3.13 -m venv venv && pip install uv && uv sync --all-groups && rm -rf venv/`.
+Then use `source .venv/bin/activate` to activate your venv.
+
 ## Build and Publish
 
 This project uses `setuptools` as the dependency management and build tool.
