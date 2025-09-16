@@ -110,6 +110,7 @@ show_traceback = true
 strict = true
 strict_bytes = true
 strict_concatenate = true
+strict_equality_for_none = true
 strict_optional = true
 warn_incomplete_stub = true
 warn_no_return = true
