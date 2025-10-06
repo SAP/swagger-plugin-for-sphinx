@@ -67,7 +67,7 @@ dev = [
     "pyupgrade==3.20.0",
     "toml-sort==0.24.3",
     "pylint-per-file-ignores==2.0.3",
-    "uv==0.8.22",
+    "uv==0.8.23",
 ]
 test = [
     "pytest==8.4.2",
