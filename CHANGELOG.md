@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.2.0
+
+* Add support for python 3.14
+
 ## 5.1.3
 
 * Pass the Swagger UI options also for inline rendering.
