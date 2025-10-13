@@ -507,26 +507,26 @@ wheels = [
 
 [[package]]
 name = "flake8-builtins"
-version = "2.5.0"
+version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flake8" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7a/33/fdfe44695094124e0e518fdd4fed0c7a34a5920de7063babd4b2bbdc8a7f/flake8_builtins-2.5.0.tar.gz", hash = "sha256:bdaa3dd823e4f5308c5e712d19fa5f69daa52781ea874f5ea9c3637bcf56faa6", size = 16499, upload-time = "2024-04-09T10:57:33.399Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/88/96/abb083bdde679597d0ccee3cf7117ca092607a7efe657fbf0363dcf47eee/flake8_builtins-3.0.0.tar.gz", hash = "sha256:bab4d458de6b828634f789f84cb31aff2ab5f92cd37b4f3888ffa5e78cd9d373", size = 16661, upload-time = "2025-08-17T06:33:50.249Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/33/e423d57dbe2a2ad664d166aeceac58b469510d6c763fada32afd47ffc9ef/flake8_builtins-2.5.0-py3-none-any.whl", hash = "sha256:8cac7c52c6f0708c0902b46b385bc7e368a9068965083796f1431c0d2e6550cf", size = 11964, upload-time = "2024-04-09T10:57:31.271Z" },
+    { url = "https://files.pythonhosted.org/packages/65/57/ec9248238058a894a07768026dcad6e9c2f868b3503d79e697b7754fb1f7/flake8_builtins-3.0.0-py3-none-any.whl", hash = "sha256:d5d3c545ff3a71c8f1b2f7589a06d6740b26e38e6ce1f3954a25f32ec5829b42", size = 11955, upload-time = "2025-08-17T06:33:48.785Z" },
 ]
 
 [[package]]
 name = "flake8-comprehensions"
-version = "3.16.0"
+version = "3.17.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flake8" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6d/7d/7ffaa876ca5b330fc244287208dce1d12515b88a69488ea90ab58c94501d/flake8_comprehensions-3.16.0.tar.gz", hash = "sha256:9cbf789905a8f03f9d350fb82b17b264d9a16c7ce3542b2a7b871ef568cafabe", size = 12991, upload-time = "2024-10-27T21:51:18.029Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/93/da2d30987ce4c06404326e7c8e6636cae18c2b2f2d5542891a8ad64a34f4/flake8_comprehensions-3.17.0.tar.gz", hash = "sha256:bf4fa102b2bf4d6c9e999e29e4b2724cbadffb70b937600fc782161be4dc0f4a", size = 13269, upload-time = "2025-09-09T22:37:18.335Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5f/bf/0cf8d3c9a233620840f209490c4907d7d416d066557396ebda678c58de09/flake8_comprehensions-3.16.0-py3-none-any.whl", hash = "sha256:7c1eadc9d22e765f39857798febe7766b4d9c519793c6c149e3e13bf99693f70", size = 8169, upload-time = "2024-10-27T21:51:16.464Z" },
+    { url = "https://files.pythonhosted.org/packages/39/bd/d6739d685fdd79349aa51c37bdedc0d8eab6ae9c6e6ed2ca935b3f88210d/flake8_comprehensions-3.17.0-py3-none-any.whl", hash = "sha256:3943a9c6f2593c3bc5cc64106c2f89d63c6ecd49c8343597f8257b8fcfc8b0a2", size = 8185, upload-time = "2025-09-09T22:37:17.149Z" },
 ]
 
 [[package]]
@@ -565,7 +565,7 @@ wheels = [
 
 [[package]]
 name = "flake8-tergeo"
-version = "25.8.13.0"
+version = "25.10.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "dependency-groups" },
@@ -581,9 +581,9 @@ dependencies = [
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/87/58/fe9f131c3c1b3ed4571489230003b60fffcb829723912cde07b76b17f60b/flake8_tergeo-25.8.13.0.tar.gz", hash = "sha256:fe163670574e291a1ace2b9c6d6f9ac3f537cca11eb714acef550bb5b027e57e", size = 114706, upload-time = "2025-08-13T06:12:54.558Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bb/43/75131052f42e219c34c771889e85a70a03c3ca8e16d92896e8433762ef68/flake8_tergeo-25.10.9.0.tar.gz", hash = "sha256:42f5f6d5cb11f644e62e5bfffdda8245c062f8fd4e056b788585bdae3a2677bc", size = 114517, upload-time = "2025-10-09T09:16:43.248Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/37/93/83ad8f837921842e508f37206ad57570dd81818e37c70446fbaf9ae91b31/flake8_tergeo-25.8.13.0-py3-none-any.whl", hash = "sha256:6227e17eba3cad97ee75a70c93c084b133038c2ffb3b37bbbe9d889dc038c5a4", size = 58750, upload-time = "2025-08-13T06:12:52.805Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/83/3157627078ab52ad8a24802d6f3252e186f0952e521d2741c2ce3ae226c7/flake8_tergeo-25.10.9.0-py3-none-any.whl", hash = "sha256:fe5019b030deddf15e55d1f189acb23c6a89d56eb3f747e7e132191155e7713a", size = 58911, upload-time = "2025-10-09T09:16:42.042Z" },
 ]
 
 [[package]]
@@ -1383,7 +1383,7 @@ requires-dist = [
 dev = [
     { name = "black", specifier = "==25.9.0" },
     { name = "flake8", specifier = "==7.3.0" },
-    { name = "flake8-tergeo", specifier = "==25.8.13.0" },
+    { name = "flake8-tergeo", specifier = "==25.10.9.0" },
     { name = "isort", specifier = "==6.1.0" },
     { name = "mypy", specifier = "==1.18.2" },
     { name = "pre-commit", specifier = "==4.3.0" },
