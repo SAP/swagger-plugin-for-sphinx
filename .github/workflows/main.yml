@@ -32,9 +32,9 @@ jobs:
         run: uv run pre-commit run --all
       - name: Check for uncommitted changes
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
+          if [[ -n "$(git status --porcelain --untracked-files=all)" ]]; then
             echo "Changed files after pre-commit!"
-            git status
+            git status --porcelain --untracked-files=all
             exit 1
           fi
   ci-test:
