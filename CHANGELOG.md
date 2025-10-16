@@ -1,5 +1,9 @@
 # Changelog
 
+## 6.0.0
+* Removed support for sphinx 6.x
+* Removed support for python 3.9
+
 ## 5.2.0
 
 * Add support for python 3.14
