@@ -18,7 +18,7 @@ per-file-ignores =
     tests/*:FTP300,FTP301,FTP302,FTP303,FTP304
     tests/test_data/*:FTP040
     tests/test_subdirs/*:FTP040
-ftp-python-version = 3.9.0
+ftp-python-version = 3.10.0
 ftp-pyproject-toml-file = pyproject.toml
 ftp-auto-manage-options = true
 ftp-pytest-parametrize-names-type = csv
