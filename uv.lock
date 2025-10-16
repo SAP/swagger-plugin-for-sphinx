@@ -1181,7 +1181,7 @@ wheels = [
 
 [[package]]
 name = "swagger-plugin-for-sphinx"
-version = "5.2.0"
+version = "6.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "docutils" },
