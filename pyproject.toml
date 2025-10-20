@@ -66,7 +66,7 @@ dev = [
     "types-PyYAML==6.0.12.20250915",
     "pyupgrade==3.21.0",
     "toml-sort==0.24.3",
-    "pylint-per-file-ignores==2.0.3",
+    "pylint-per-file-ignores==3.1.0",
     "uv==0.9.4",
 ]
 test = [
