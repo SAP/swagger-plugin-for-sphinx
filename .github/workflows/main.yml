@@ -42,7 +42,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12', '3.14']
-        sphinx-version: [7.*, 8.*, 9.*]
+        sphinx-version: [7.0.*, 7.*, 8.0.*, 8.*, 9.0.*, 9.*]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -64,9 +64,7 @@ jobs:
       - name: Wait for selenium container
         run: while ! curl -sSL http://localhost:4444/wd/hub/status | jq .value.ready | grep true; do sleep 1; done
       - name: run tests (with coverage)
-        run: uv run  pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml tests/
-      - name: run diff-cover
-        run: uv run  diff-cover --config-file pyproject.toml coverage.xml
+        run: uv run  --no-sync pytest --cov swagger_plugin_for_sphinx --cov tests --cov-report xml --cov-fail-under 0 tests/
       - name: Rename coverage file
         run: |
           UUID=$(uuidgen)
@@ -108,6 +106,8 @@ jobs:
           mv .coverage ../.coverage
           cd ..
           uv run coverage xml
+      - name: run diff-cover
+        run: uv run  diff-cover --config-file pyproject.toml coverage.xml
       - name: Upload to Coveralls
         uses: coverallsapp/github-action@v2
         with:
