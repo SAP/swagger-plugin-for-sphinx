@@ -46,7 +46,7 @@ license-files = [
 name = "swagger-plugin-for-sphinx"
 readme = "README.md"
 requires-python = ">=3.10,<4"
-version = "6.0.0"
+version = "6.1.0"
 
 [project.urls]
 Changelog = "https://github.com/SAP/swagger-plugin-for-sphinx/blob/main/CHANGELOG.md"
