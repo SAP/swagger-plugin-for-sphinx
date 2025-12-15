@@ -45,7 +45,7 @@ def build_and_host_docs(build_dir: str, testdata: Path) -> Iterator[HostBrowser]
             subprocess.Popen(["python", "-m", "http.server", "--directory", build_dir])
         )
         time.sleep(5)
-        return browser  # type: ignore[no-any-return]
+        return browser
 
     yield _inner
 
