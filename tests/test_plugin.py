@@ -82,8 +82,7 @@ def test_full_page(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     )
 
     base_url = "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest"
-    expected = dedent(
-        f"""<!DOCTYPE html>
+    expected = dedent(f"""<!DOCTYPE html>
 <html>
     <head>
         <title>OpenAPI Specification</title>
@@ -103,15 +102,13 @@ def test_full_page(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
             }}
         </script>
     </body>
-</html>"""
-    )
+</html>""")
 
     assert expected == read_api_html(tmp_path)
 
 
 def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
-    contents = dedent(
-        """
+    contents = dedent("""
     API
     ===
 
@@ -120,8 +117,7 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
 
     .. swagger-plugin:: other.yaml
        :id: two
-    """
-    )
+    """)
     sphinx_runner(directive=contents)
 
     html = read_api_html(tmp_path)
@@ -139,16 +135,14 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
 
 
 def test_swagger_options(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
-    contents = dedent(
-        """
+    contents = dedent("""
     API
     ===
 
     .. swagger-plugin:: openapi.yaml
        :swagger-options: {"deepLinking": 1}
 
-    """
-    )
+    """)
     sphinx_runner(directive=contents)
 
     html = read_api_html(tmp_path)
@@ -236,8 +230,7 @@ def test_custom_urls(
         css_uri,
     )
 
-    expected = dedent(
-        f"""<!DOCTYPE html>
+    expected = dedent(f"""<!DOCTYPE html>
 <html>
     <head>
         <title>OpenAPI Specification</title>
@@ -257,8 +250,7 @@ def test_custom_urls(
             }}
         </script>
     </body>
-</html>"""
-    )
+</html>""")
 
     assert expected == read_api_html(tmp_path)
 
@@ -300,8 +292,7 @@ def test_subdirs(tmp_path: Path, builder: str) -> None:
     )
     two = subsubdir / "two.rst"
     two.write_text(
-        dedent(
-            """
+        dedent("""
             API Two
             =======
 
@@ -310,8 +301,7 @@ def test_subdirs(tmp_path: Path, builder: str) -> None:
 
             .. swagger-plugin:: ../../../code/openapi.yaml
                :id: from-code
-            """
-        ),
+            """),
         encoding="utf-8",
     )
 
