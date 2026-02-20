@@ -1451,7 +1451,7 @@ test = [
 requires-dist = [
     { name = "docutils" },
     { name = "jinja2", specifier = "~=3.0" },
-    { name = "sphinx", specifier = ">=6.0,<10" },
+    { name = "sphinx", specifier = ">=8.0,<10" },
     { name = "typing-extensions", specifier = "~=4.5" },
 ]
 
