@@ -1,8 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = [
-    "setuptools>=61",
-]
+requires = ["setuptools~=82.0", "setuptools-scm~=9.2"]
 
 [project]
 authors = [
@@ -27,12 +25,13 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "sphinx>=6.0,<10",
+    "sphinx>=8.0,<10",
     "jinja2~=3.0",
     "docutils",
     "typing_extensions~=4.5",
 ]
 description = "Sphinx plugin which renders a OpenAPI specification with Swagger"
+dynamic = ["version"]
 keywords = [
     "sphinx",
     "swagger",
@@ -46,7 +45,6 @@ license-files = [
 name = "swagger-plugin-for-sphinx"
 readme = "README.md"
 requires-python = ">=3.10,<4"
-version = "6.1.0"
 
 [project.urls]
 Changelog = "https://github.com/SAP/swagger-plugin-for-sphinx/blob/main/CHANGELOG.md"
@@ -68,6 +66,7 @@ dev = [
     "toml-sort==0.24.3",
     "pylint-per-file-ignores==3.2.0",
     "uv==0.10.4",
+    "towncrier==25.8.0",
 ]
 test = [
     "pytest==9.0.2",
@@ -170,12 +169,16 @@ reports = false
 [tool.pylint.similarities]
 ignore-imports = true
 
-[tool.pytest.ini_options]
-addopts = "--strict-markers"
+[tool.pytest]
+addopts = ["-p", "no:legacypath"]
+filterwarnings = [
+    "error",
+    "ignore:'sphinx.environment.BuildEnvironment.app' is deprecated.*:",
+]
 markers = [
     "integration: integration tests",
 ]
-xfail_strict = true
+strict = true
 
 [tool.setuptools.package-data]
 swagger_plugin_for_sphinx = [
@@ -188,11 +191,41 @@ include = [
     "swagger_plugin_for_sphinx",
 ]
 
+[tool.setuptools_scm]
+version_file = ""
+
 [tool.tomlsort]
 sort_first = ["build-system", "project", "project.urls", "dependency-groups"]
 sort_table_keys = true
 spaces_indent_inline_array = 4
 trailing_comma_inline_array = true
+
+[tool.towncrier]
+directory = "news"
+filename = "CHANGELOG.md"
+start_string = "<!-- towncrier release notes start -->\n"
+title_format = "## {version} ({project_date})"
+underlines = ["", "", ""]
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Removals"
+
+[[tool.towncrier.type]]
+directory = "deprecation"
+name = "Deprecations"
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+
+[[tool.towncrier.type]]
+directory = "change"
+name = "Changes"
+
+[[tool.towncrier.type]]
+directory = "fix"
+name = "Fixes"
 
 [tool.uv]
 default-groups = []

@@ -1,5 +1,7 @@
 # Changelog
 
+<!-- towncrier release notes start -->
+
 ## 6.1.0
 * Add support for sphinx 9
 

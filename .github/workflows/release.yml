@@ -2,14 +2,71 @@ name: Release
 
 permissions:
   contents: write
+  pull-requests: write
 
 on:
-  push:
-    tags:
-      - v*
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version (e.g., 1.2.3)
+        required: true
+        type: string
+  pull_request:
+    types: [closed]
+    branches:
+      - main
 
 jobs:
-  release:
+  create-release-pr:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          version-file: pyproject.toml
+      - name: Install dependencies
+        run: uv sync --all-groups --all-extras
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Create release branch
+        run: |
+          git checkout -b release/${{ inputs.version }}
+      - name: Build Changelog
+        run: uv run towncrier build --yes --version ${{ inputs.version }}
+      - name: Commit Changelog
+        run: |
+          git add CHANGELOG.md
+          git add news/ || true
+          git commit -m "Release ${{ inputs.version }}"
+      - name: Push release branch
+        run: git push origin release/${{ inputs.version }}
+      - name: Create Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr create \
+            --base main \
+            --head release/${{ inputs.version }} \
+            --title "Release ${{ inputs.version }}" \
+            --body "This PR contains the changelog for version ${{ inputs.version }}.
+
+          Once merged, a tag \`v${{ inputs.version }}\` will be automatically created and a GitHub release will be published."
+  create-tag-and-release:
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') && github.event.pull_request.user.login
+      == 'github-actions[bot]'
     runs-on: ubuntu-latest
     environment: release
     permissions:
@@ -17,26 +74,34 @@ jobs:
       contents: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
       - name: Setup python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version-file: .python-version
       - name: Install uv
-        uses: astral-sh/setup-uv@v7
+        uses: astral-sh/setup-uv@v6
         with:
           version-file: pyproject.toml
+      - name: Extract version from branch name
+        id: extract_version
+        run: |
+          VERSION="${{ github.head_ref }}"
+          VERSION="${VERSION#release/}"
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Create and Push Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ steps.extract_version.outputs.version }}" -m "Version ${{ steps.extract_version.outputs.version }}"
+          git push origin "v${{ steps.extract_version.outputs.version }}"
       - name: Create wheel
-        run: uv build -o dist/
+        run: uv build -o dist/ .
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-      - name: Determine version
-        run: |
-          tag="${GITHUB_REF#refs/*/}"
-          version="${tag:1}"
-          echo "RELEASE_VERSION=${version}" >> $GITHUB_ENV
       - name: Release on GitHub
         uses: softprops/action-gh-release@v2
         with:
           files: dist/*
-          name: Version ${{ env.RELEASE_VERSION }}
+          tag_name: v${{ steps.extract_version.outputs.version }}
+          name: Version ${{ steps.extract_version.outputs.version }}
