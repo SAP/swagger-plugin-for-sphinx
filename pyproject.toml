@@ -173,7 +173,7 @@ ignore-imports = true
 addopts = ["-p", "no:legacypath"]
 filterwarnings = [
     "error",
-    "ignore:'sphinx.environment.BuildEnvironment.app' is deprecated.*:sphinx.deprecation.RemovedInSphinx11Warning",
+    "ignore:'sphinx.environment.BuildEnvironment.app' is deprecated.*:",
 ]
 markers = [
     "integration: integration tests",
