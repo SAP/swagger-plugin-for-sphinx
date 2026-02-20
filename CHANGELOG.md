@@ -2,6 +2,17 @@
 
 <!-- towncrier release notes start -->
 
+## 7.0.0 (2026-02-20)
+
+### Removals
+
+- Removed support for sphinx 7.x
+
+### Changes
+
+- Updated the release actions
+
+
 ## 6.1.0
 * Add support for sphinx 9
 
