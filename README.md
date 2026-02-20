@@ -74,12 +74,7 @@ To setup a venv for development use
 Then use `source .venv/bin/activate` to activate your venv.
 
 ## Build and Publish
-
-This project uses `setuptools` as the dependency management and build tool.
-To publish a new release, follow these steps:
-* Update the version in the `pyproject.toml`
-* Add an entry in the changelog
-* Push a new tag like `vX.X.X` to trigger the release
+Execute the release action with the proper version.
 
 ## Support, Feedback, Contributing
 
