@@ -76,6 +76,8 @@ test = [
     "selenium==4.41.0",
     "pyyaml==6.0.3",
     "pytest-randomly==4.0.1",
+    # pin until requests supports it
+    "chardet==5.2.0",
 ]
 
 [tool.coverage.report]
