@@ -64,6 +64,12 @@ jobs:
             --body "This PR contains the changelog for version ${{ inputs.version }}.
 
           Once merged, a tag \`v${{ inputs.version }}\` will be automatically created and a GitHub release will be published."
+      - name: Close and reopen PR to trigger CI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr close release/${{ inputs.version }}
+          gh pr reopen release/${{ inputs.version }}
   create-tag-and-release:
     if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && startsWith(github.head_ref, 'release/') && github.event.pull_request.user.login
       == 'github-actions[bot]'
