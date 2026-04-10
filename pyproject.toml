@@ -73,7 +73,7 @@ test = [
     "coverage==7.13.5",
     "diff-cover==10.2.0",
     "pytest-cov==7.1.0",
-    "selenium==4.42.0",
+    "selenium==4.43.0",
     "pyyaml==6.0.3",
     "pytest-randomly==4.0.1",
     # pin until requests supports it
