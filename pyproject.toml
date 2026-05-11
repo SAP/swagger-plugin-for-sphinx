@@ -113,7 +113,6 @@ show_column_numbers = true
 show_error_codes = true
 show_traceback = true
 strict = true
-strict_bytes = true
 strict_concatenate = true
 strict_equality_for_none = true
 strict_optional = true
