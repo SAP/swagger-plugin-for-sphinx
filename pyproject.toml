@@ -61,7 +61,7 @@ dev = [
     "mypy==2.0.0",
     "types-docutils==0.22.3.20260508",
     "yesqa==1.5.0",
-    "types-PyYAML==6.0.12.20260508",
+    "types-PyYAML==6.0.12.20260510",
     "pyupgrade==3.21.2",
     "toml-sort==0.24.4",
     "pylint-per-file-ignores==3.2.1",
