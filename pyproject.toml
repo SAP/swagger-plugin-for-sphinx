@@ -54,7 +54,7 @@ Changelog = "https://github.com/SAP/swagger-plugin-for-sphinx/blob/main/CHANGELO
 dev = [
     "pre-commit==4.6.0",
     "pylint==4.0.5",
-    "black==26.3.1",
+    "black==26.5.0",
     "isort==8.0.1",
     "flake8==7.3.0",
     "flake8-tergeo==26.4.9.0",
