@@ -1587,7 +1587,7 @@ dev = [
     { name = "pyupgrade", specifier = "==3.21.2" },
     { name = "toml-sort", specifier = "==0.24.4" },
     { name = "towncrier", specifier = "==25.8.0" },
-    { name = "types-docutils", specifier = "==0.22.3.20260508" },
+    { name = "types-docutils", specifier = "==0.22.3.20260518" },
     { name = "types-pyyaml", specifier = "==6.0.12.20260510" },
     { name = "uv", specifier = "==0.11.14" },
     { name = "yesqa", specifier = "==1.5.0" },
@@ -1735,11 +1735,11 @@ wheels = [
 
 [[package]]
 name = "types-docutils"
-version = "0.22.3.20260508"
+version = "0.22.3.20260518"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/88/fa/38121f440851d813099c73296219e1b7be327cdd5b250b171744053dc87e/types_docutils-0.22.3.20260508.tar.gz", hash = "sha256:f043dd1fffad161cb671b0e3bf593bb5229b8d40bf365ac7d8337296dc97e6bc", size = 57431, upload-time = "2026-05-08T04:46:34.541Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fd/91/81b520d0869a41aa0d86e713417b63e8604b4280c304bc09b02d74c7efd4/types_docutils-0.22.3.20260518.tar.gz", hash = "sha256:2c45ba63a9ac64246335359b68fe9c27602926499c9b67caec3780745f6aadee", size = 57504, upload-time = "2026-05-18T06:03:53.325Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/57/07/f407403b94fc80a22e9ff9c31f17d78a3272f6cce9773081fbaf853a09e7/types_docutils-0.22.3.20260508-py3-none-any.whl", hash = "sha256:47bbac43bee53bcaf99f12f5b4253bf864777c31ac4eda6e3bf6660aa6ceac40", size = 91919, upload-time = "2026-05-08T04:46:33.336Z" },
+    { url = "https://files.pythonhosted.org/packages/01/9b/243fb84ede4f987f303a89e734c5def35ead2f8bd962ad301c1e99680958/types_docutils-0.22.3.20260518-py3-none-any.whl", hash = "sha256:9c4cbc37d9e37f47dfe971ac09e9880380dc948ff1f23956892e810d0bf08676", size = 91970, upload-time = "2026-05-18T06:03:52.388Z" },
 ]
 
 [[package]]
