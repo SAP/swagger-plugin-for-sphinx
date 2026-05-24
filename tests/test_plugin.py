@@ -26,6 +26,7 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
         swagger_present_uri: str | None = None,
         swagger_bundle_uri: str | None = None,
         swagger_css_uri: str | None = None,
+        swagger_mirror_external_resources: bool | None = None,
         sphinx_builder: str = "html",
     ) -> None:
         code = ["extensions = ['swagger_plugin_for_sphinx']"]
@@ -35,6 +36,10 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
             code.append(f"swagger_bundle_uri = '{swagger_bundle_uri}'")
         if swagger_css_uri:
             code.append(f"swagger_css_uri = '{swagger_css_uri}'")
+        if swagger_mirror_external_resources:
+            code.append(
+                f"swagger_mirror_external_resources = {swagger_mirror_external_resources}"
+            )
 
         conf = docs / "conf.py"
         with open(conf, "w+", encoding="utf-8") as file:
@@ -164,6 +169,44 @@ def test_swagger_plugin_directive_same_dir(
 
     spec = tmp_path / "build" / "_static" / "openapi.yaml"
     assert spec.exists()
+
+
+def test_swagger_plugin_mirror_resources(
+    sphinx_runner: SphinxRunner, tmp_path: Path
+) -> None:
+    sphinx_runner(
+        ".. swagger-plugin:: openapi.yaml", swagger_mirror_external_resources=True
+    )
+
+    html = read_api_html(tmp_path)
+    assert "_static/swagger-ui-standalone-preset.js" in html
+    assert "_static/swagger-ui-bundle.js" in html
+    assert "_static/swagger-ui.css" in html
+    assert "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest" not in html
+
+    assert (tmp_path / "build" / "_static" / "swagger-ui-standalone-preset.js").exists()
+    assert (tmp_path / "build" / "_static" / "swagger-ui-bundle.js").exists()
+    assert (tmp_path / "build" / "_static" / "swagger-ui.css").exists()
+
+
+def test_swagger_plugin_no_mirror_resources(
+    sphinx_runner: SphinxRunner, tmp_path: Path
+) -> None:
+    sphinx_runner(
+        ".. swagger-plugin:: openapi.yaml", swagger_mirror_external_resources=False
+    )
+
+    html = read_api_html(tmp_path)
+    assert "swagger-ui-standalone-preset.js" in html
+    assert "swagger-ui-bundle.js" in html
+    assert "swagger-ui.css" in html
+    assert "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest" in html
+
+    assert not (
+        tmp_path / "build" / "_static" / "swagger-ui-standalone-preset.js"
+    ).exists()
+    assert not (tmp_path / "build" / "_static" / "swagger-ui-bundle.js").exists()
+    assert not (tmp_path / "build" / "_static" / "swagger-ui.css").exists()
 
 
 def test_swagger_plugin_dirhtml(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
