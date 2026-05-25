@@ -165,8 +165,8 @@ def test_openapi_search_index_not_in_html(
     assert "Schema Pet" not in html
 
     searchindex = (tmp_path / "build" / "searchindex.js").read_text(encoding="utf-8")
-    assert "list" in searchindex.lower()
-    assert "pet" in searchindex.lower()
+    assert "list" in searchindex  # from "List all pets"
+    assert "schema" in searchindex  # from "Schema Pet"
 
 
 def test_swagger_plugin_directive_same_dir(

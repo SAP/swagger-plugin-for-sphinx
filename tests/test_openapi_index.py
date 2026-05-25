@@ -8,14 +8,14 @@ import pytest
 from sphinx.errors import ExtensionError
 
 from swagger_plugin_for_sphinx._openapi_index import (
-    load_openapi_mapping,
+    load_openapi_file,
     openapi_lines_for_search,
 )
 
 
 def test_openapi_lines_for_search() -> None:
     spec_path = Path(__file__).with_name("openapi.yml")
-    spec = load_openapi_mapping(spec_path)
+    spec = load_openapi_file(spec_path)
     lines = openapi_lines_for_search(spec)
     assert "Swagger Petstore 1.0.0" in lines
     assert "GET /pets — List all pets" in lines
@@ -180,18 +180,18 @@ def test_load_openapi_invalid_yaml(tmp_path: Path) -> None:
     bad = tmp_path / "bad.yaml"
     bad.write_text("foo: [", encoding="utf-8")
     with pytest.raises(ExtensionError, match="Could not parse"):
-        load_openapi_mapping(bad)
+        load_openapi_file(bad)
 
 
 def test_load_openapi_not_mapping(tmp_path: Path) -> None:
     listed = tmp_path / "list.yaml"
     listed.write_text("- a\n- b\n", encoding="utf-8")
     with pytest.raises(ExtensionError, match="must be a mapping"):
-        load_openapi_mapping(listed)
+        load_openapi_file(listed)
 
 
 def test_load_json(tmp_path: Path) -> None:
     j = tmp_path / "x.json"
     j.write_text('{"info": {"title": "T"}, "paths": {}}', encoding="utf-8")
-    spec = load_openapi_mapping(j)
+    spec = load_openapi_file(j)
     assert openapi_lines_for_search(spec) == ["T"]

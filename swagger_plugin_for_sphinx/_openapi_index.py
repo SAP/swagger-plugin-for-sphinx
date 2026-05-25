@@ -8,11 +8,22 @@ from typing import Any
 
 import yaml
 from sphinx.errors import ExtensionError
+from sphinx.util import logging
 
 _HTTP_METHODS = frozenset(
     {"get", "post", "put", "patch", "delete", "head", "options", "trace"},
 )
 _DESCRIPTION_MAX_LEN = 500
+logger = logging.getLogger(__name__)
+
+
+def _check_for_string(val: Any) -> str:
+    """Defensive check for string values in OpenAPI spec fields."""
+    if isinstance(val, str):
+        return val.strip()
+    if val is not None:
+        logger.warning("Expected a string value, got %s: %r", type(val).__name__, val)
+    return ""
 
 
 def _append_description_line(
@@ -21,6 +32,8 @@ def _append_description_line(
     *,
     compare_to: str,
 ) -> None:
+    """Append a description line to the text for the search index."""
+    # If the description is identical to the summary/title, skip it.
     if isinstance(desc, str) and desc.strip() and desc.strip() != compare_to.strip():
         snippet = desc.strip()
         if len(snippet) > _DESCRIPTION_MAX_LEN:
@@ -28,12 +41,15 @@ def _append_description_line(
         lines.append(snippet)
 
 
-def _schema_map_from_spec(spec: dict[str, Any]) -> dict[str, Any] | None:
+def _get_schemas(spec: dict[str, Any]) -> dict[str, Any] | None:
+    """Return text from the schema section of the spec for use in the search index."""
+    # Components are part of the OpenAPI 3.x specification.
     components = spec.get("components")
     if isinstance(components, dict):
         schemas = components.get("schemas")
         if isinstance(schemas, dict):
             return schemas
+    # For 2.0, use top-level definitions.
     definitions = spec.get("definitions")
     if isinstance(definitions, dict):
         return definitions
@@ -41,26 +57,26 @@ def _schema_map_from_spec(spec: dict[str, Any]) -> dict[str, Any] | None:
 
 
 def _extend_schema_lines(lines: list[str], spec: dict[str, Any]) -> None:
-    schemas = _schema_map_from_spec(spec)
+    """Add key fields from the schema objects to the search index."""
+    schemas = _get_schemas(spec)
     if not schemas:
         return
-    for name in sorted(schemas):
-        body = schemas[name]
-        if not isinstance(body, dict):
+    for name in schemas:  # "Pet"
+        schema = schemas[name]  # {"type": "object", "title": "A Pet", ...}
+        if not isinstance(schema, dict):
             continue
-        title = body.get("title")
-        title_str = title.strip() if isinstance(title, str) and title.strip() else ""
-        subtitle = title_str if title_str and title_str != str(name) else ""
-        lines.append(f"Schema {name}" + (f" — {subtitle}" if subtitle else ""))
+        title_str = _check_for_string(schema.get("title"))
+        suffix = f" — {title_str}" if title_str and title_str != str(name) else ""
+        lines.append(f"Schema {name}{suffix}")  # "Schema Pet — A Pet"
         _append_description_line(
             lines,
-            body.get("description"),
+            schema.get("description"),
             compare_to=title_str or str(name),
         )
 
 
-def load_openapi_mapping(path: Path) -> dict[str, Any]:
-    """Load a JSON or YAML OpenAPI file into a mapping."""
+def load_openapi_file(path: Path) -> dict[str, Any]:
+    """Load a JSON or YAML OpenAPI file."""
     raw = path.read_text(encoding="utf-8")
     try:
         data: Any = json.loads(raw)
@@ -75,39 +91,40 @@ def load_openapi_mapping(path: Path) -> dict[str, Any]:
 
 
 def openapi_lines_for_search(spec: dict[str, Any]) -> list[str]:
-    """Build human-readable lines for search: API title, operations, and schemas."""
+    """Build human-readable lines from the spec for the search index.
+
+    Get the API title, operations, and schemas.
+    """
     lines: list[str] = []
+    # Get the API title and version.
     info = spec.get("info")
     if isinstance(info, dict):
         title = info.get("title")
         if title:
             version = info.get("version")
             lines.append(f"{title} {version}" if version else str(title))
+    # Get the endpoints and methods.
     paths = spec.get("paths")
     if isinstance(paths, dict):
-        for path in sorted(paths):
-            path_item = paths[path]
-            if not isinstance(path_item, dict):
+        for path in paths:  # "/pets"
+            if not isinstance(paths[path], dict):
                 continue
-            for method in sorted(path_item, key=str.lower):
+            for method in paths[path]:  # "get"
                 if str(method).lower() not in _HTTP_METHODS:
                     continue
-                op = path_item[method]
+                op = paths[path][method]  # {"summary": "List all pets", ...}
                 if not isinstance(op, dict):
                     continue
-                summary = op.get("summary")
-                op_id = op.get("operationId")
-                label = summary if isinstance(summary, str) and summary.strip() else ""
-                if not label and isinstance(op_id, str) and op_id.strip():
-                    label = op_id.strip()
-                upper = str(method).upper()
-                line = f"{upper} {path}" + (f" — {label}" if label else "")
-                lines.append(line)
-                summary_cmp = summary.strip() if isinstance(summary, str) else ""
+                summary = _check_for_string(op.get("summary"))  # "List all pets"
+                label = summary or _check_for_string(op.get("operationId"))
+                suffix = f" — {label}" if label else ""
+                lines.append(
+                    f"{str(method).upper()} {path}{suffix}"
+                )  # "GET /pets — List all pets"
                 _append_description_line(
                     lines,
                     op.get("description"),
-                    compare_to=summary_cmp,
+                    compare_to=summary,
                 )
     _extend_schema_lines(lines, spec)
     return lines

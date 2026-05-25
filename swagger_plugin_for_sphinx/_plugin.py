@@ -20,7 +20,7 @@ from sphinx.writers.html5 import HTML5Translator
 from typing_extensions import override
 
 from swagger_plugin_for_sphinx._openapi_index import (
-    load_openapi_mapping,
+    load_openapi_file,
     openapi_lines_for_search,
 )
 
@@ -129,7 +129,8 @@ class SwaggerPluginDirective(SphinxDirective):
         if config["full_page"]:
             return []
 
-        spec_data = load_openapi_mapping(spec)
+        # Add the title, operations, and schema objects to the Sphinx search index.
+        spec_data = load_openapi_file(spec)
         search_lines = openapi_lines_for_search(spec_data)
         index_node = _build_search_index_node(search_lines, self)
 
