@@ -36,6 +36,13 @@ swagger_css_uri = ""
 These correspond to the modules explained [here](https://github.com/swagger-api/swagger-ui/blob/master/docs/usage/installation.md).
 By default, the latest release is used from [here](https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest).
 
+Optionally if you do now want to redirect users to the mirror but prefer local
+serving you can mirror the Swagger dependencies into the generated doctree in ``conf.py`` via:
+
+```python
+swagger_mirror_external_resources = True
+```
+
 ### Directive
 
 To include a Swagger API specification into an HTML page specify the `swagger-plugin` directive

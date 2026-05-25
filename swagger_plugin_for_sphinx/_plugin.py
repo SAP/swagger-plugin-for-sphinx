@@ -7,6 +7,7 @@ from collections.abc import Iterator
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any
+from urllib import request
 
 import jinja2
 from docutils import nodes
@@ -76,6 +77,19 @@ class SwaggerPluginDirective(SphinxDirective):
         ensuredir(str(outfile.parent))
         copyfile(str(spec), str(outfile))
 
+        if app.config.swagger_mirror_external_resources:
+            for uri in (
+                app.config.swagger_present_uri,
+                app.config.swagger_bundle_uri,
+                app.config.swagger_css_uri,
+            ):
+                filename = Path(uri).name
+                mirrored_file = static_dir.joinpath(filename)
+                request.urlretrieve(uri, mirrored_file)
+                logger.info(
+                    "Adding to _static output path: %s (from %s).", filename, uri
+                )
+
         # The range - 1 is to skip the RST or MD document itself.
         url_path = (
             "".join(
@@ -126,9 +140,20 @@ def add_css_js(
 
     content = template.render({"specs": configs})
 
-    app.add_js_file(app.config.swagger_present_uri)
-    app.add_js_file(app.config.swagger_bundle_uri)
-    app.add_css_file(app.config.swagger_css_uri)
+    if app.config.swagger_mirror_external_resources:
+        # Change references of external resources to mirrored local names
+        # folder "_static/" is added by Sphinx when the file is added as a static file.
+        swagger_present_uri = Path(app.config.swagger_present_uri).name
+        swagger_bundle_uri = Path(app.config.swagger_bundle_uri).name
+        swagger_css_uri = Path(app.config.swagger_css_uri).name
+    else:
+        swagger_present_uri = app.config.swagger_present_uri
+        swagger_bundle_uri = app.config.swagger_bundle_uri
+        swagger_css_uri = app.config.swagger_css_uri
+
+    app.add_js_file(swagger_present_uri)
+    app.add_js_file(swagger_bundle_uri)
+    app.add_css_file(swagger_css_uri)
     app.add_js_file(None, body=content)
 
 
@@ -174,6 +199,15 @@ def setup(app: Sphinx) -> dict[str, Any]:
         "swagger_css_uri",
         "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui.css",
         "html",
+    )
+    app.add_config_value(
+        "swagger_mirror_external_resources",
+        False,
+        "html",
+        bool,
+        "If set to True, external resources (JS/CSS) will be mirrored locally. "
+        "This is useful for offline use or to avoid CORS issues. Note that this will increase "
+        "the build time and the size of the output directory. Defaults to False.",
     )
 
     app.connect("html-collect-pages", render)
