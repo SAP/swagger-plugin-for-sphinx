@@ -1,1 +1,0 @@
-- Add ability to mirror Swagger resources to doctree
