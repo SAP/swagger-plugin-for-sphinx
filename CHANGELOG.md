@@ -2,6 +2,13 @@
 
 <!-- towncrier release notes start -->
 
+## 7.2.0 (2026-05-28)
+
+### Features
+
+- The OpenAPI spec is now indexed for the sphinx search
+
+
 ## 7.1.0 (2026-05-27)
 
 - Add ability to mirror Swagger resources to doctree
