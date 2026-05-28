@@ -124,6 +124,26 @@ def test_extension(
 
 
 @pytest.mark.integration
+def test_search(host_browser: HostBrowser) -> None:
+    """Search for an OpenAPI operation or schema returns results for the reference pages."""
+    browser = host_browser([])
+
+    browser.get("http://localhost:8000/search.html?q=List+all+pets")
+    time.sleep(5)
+    links = browser.find_elements(By.CSS_SELECTOR, "ul.search li a")
+    hrefs = [href for link in links if (href := link.get_attribute("href"))]
+    assert any("petstore" in href for href in hrefs)
+    assert any("rockstore" in href for href in hrefs)
+
+    browser.get("http://localhost:8000/search.html?q=Schema+Pet")
+    time.sleep(5)
+    links = browser.find_elements(By.CSS_SELECTOR, "ul.search li a")
+    hrefs = [href for link in links if (href := link.get_attribute("href"))]
+    assert any("petstore" in href for href in hrefs)
+    assert any("rockstore" in href for href in hrefs)
+
+
+@pytest.mark.integration
 def test_dirhtml(host_browser: HostBrowser) -> None:
     """Test a dirhtml scenario."""
     browser = host_browser(["-b", "dirhtml"])

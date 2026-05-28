@@ -17,10 +17,40 @@ from sphinx.errors import ExtensionError
 from sphinx.util import logging
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.osutil import copyfile, ensuredir
+from sphinx.writers.html5 import HTML5Translator
 from typing_extensions import override
+
+from swagger_plugin_for_sphinx._openapi_index import (
+    load_openapi_file,
+    openapi_lines_for_search,
+)
 
 logger = logging.getLogger(__name__)
 _HERE = Path(__file__).parent.resolve()
+
+
+class SwaggerSearchIndex(nodes.Element):
+    """OpenAPI text for full-text search; not rendered in HTML."""
+
+
+def _visit_swagger_search_index_html(
+    self: HTML5Translator, _node: SwaggerSearchIndex
+) -> None:
+    """Suppress rendering; search indexing walks the doctree separately."""
+    raise nodes.SkipNode()
+
+
+def _build_search_index_node(
+    lines: list[str], directive: SwaggerPluginDirective
+) -> SwaggerSearchIndex:
+    """Wrap *lines* as paragraphs for ``IndexBuilder``, hidden from HTML output."""
+    block = SwaggerSearchIndex()
+    directive.set_source_info(block)
+    for line in lines:
+        para = nodes.paragraph("", line)
+        directive.set_source_info(para)
+        block.append(para)
+    return block
 
 
 class SwaggerPluginDirective(SphinxDirective):
@@ -113,11 +143,16 @@ class SwaggerPluginDirective(SphinxDirective):
         if config["full_page"]:
             return []
 
+        # Add the title, operations, and schema objects to the Sphinx search index.
+        spec_data = load_openapi_file(spec)
+        search_lines = openapi_lines_for_search(spec_data)
+        index_node = _build_search_index_node(search_lines, self)
+
         div_id = self.options.get("id", "swagger-ui-container")
         node = nodes.container(ids=[div_id], classes=self.options.get("classes", []))
         self.set_source_info(node)
         config["div_id"] = div_id
-        return [node]
+        return [index_node, node]
 
 
 def add_css_js(
@@ -185,6 +220,8 @@ def render(app: Sphinx) -> Iterator[tuple[Any, ...]]:
 
 def setup(app: Sphinx) -> dict[str, Any]:
     """Setup this plugin."""
+    app.add_node(SwaggerSearchIndex, html=(_visit_swagger_search_index_html, None))
+
     app.add_config_value(
         "swagger_present_uri",
         "https://cdn.jsdelivr.net/npm/swagger-ui-dist@latest/swagger-ui-standalone-preset.js",

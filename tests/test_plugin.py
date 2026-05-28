@@ -158,6 +158,22 @@ def test_swagger_options(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
     assert html.count("SwaggerUIBundle(options)") == 1
 
 
+def test_openapi_search_index_not_in_html(
+    sphinx_runner: SphinxRunner, tmp_path: Path
+) -> None:
+    """Operation text feeds the HTML search index but is skipped for page body."""
+    sphinx_runner(".. swagger-plugin:: openapi.yaml")
+    html = read_api_html(tmp_path)
+    assert "List all pets" not in html
+    assert "Info for a specific pet" not in html
+    assert "Swagger Petstore" not in html
+    assert "Schema Pet" not in html
+
+    searchindex = (tmp_path / "build" / "searchindex.js").read_text(encoding="utf-8")
+    assert "list" in searchindex  # from "List all pets"
+    assert "schema" in searchindex  # from "Schema Pet"
+
+
 def test_swagger_plugin_directive_same_dir(
     sphinx_runner: SphinxRunner, tmp_path: Path
 ) -> None:
