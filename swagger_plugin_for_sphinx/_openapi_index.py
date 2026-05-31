@@ -10,7 +10,7 @@ import yaml
 from sphinx.errors import ExtensionError
 
 _HTTP_METHODS = frozenset(
-    ("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS", "TRACE")
+    ("get", "post", "put", "delete", "patch", "head", "options", "trace")
 )
 _DESCRIPTION_MAX_LEN = 500
 
