@@ -24,7 +24,7 @@ jobs:
         with:
           version-file: pyproject.toml
       - name: Install project
-        run: uv sync --all-groups --python ${{ matrix.python-version }}
+        run: uv sync --all-groups
       - name: run pre-commit
         run: uv run pre-commit run --all
       - name: Check for uncommitted changes
@@ -50,7 +50,7 @@ jobs:
         with:
           version-file: pyproject.toml
       - name: Install project
-        run: uv sync --group test
+        run: uv sync --group test --python ${{ matrix.python-version }}
       - name: Install sphinx
         run: uv pip install sphinx==${{ matrix.sphinx-version }}
       - name: setup selenium container
