@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 import json
-from http import HTTPMethod
 from pathlib import Path
 from typing import Any
 
 import yaml
 from sphinx.errors import ExtensionError
 
-_HTTP_METHODS = frozenset(method.value.lower() for method in HTTPMethod)
+_HTTP_METHODS = frozenset(
+    ("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS", "TRACE")
+)
 _DESCRIPTION_MAX_LEN = 500
 
 
