@@ -2,6 +2,13 @@
 
 <!-- towncrier release notes start -->
 
+## 7.2.1 (2026-06-01)
+
+### Fixes
+
+- Fixed an issue causing an `ImportError` on python 3.10
+
+
 ## 7.2.0 (2026-05-28)
 
 ### Features
