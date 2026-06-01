@@ -1,6 +1,5 @@
 [flake8]
 max-line-length = 100
-enable-extensions = FT
 select =
     C901,  # flake8-mccabe
     E,  # flake8-pycodestyle
