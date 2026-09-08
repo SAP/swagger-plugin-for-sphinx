@@ -67,7 +67,7 @@ dev = [
     "toml-sort==0.24.4",
     "pylint-per-file-ignores==3.2.1",
     "uv==0.12.10",
-    "towncrier==25.8.0",
+    "towncrier==26.9.0",
 ]
 test = [
     "pytest==9.1.1",
