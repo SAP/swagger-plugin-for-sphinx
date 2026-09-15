@@ -28,6 +28,7 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
         swagger_css_uri: str | None = None,
         swagger_mirror_external_resources: bool | None = None,
         sphinx_builder: str = "html",
+        spec_suffix: str = "",
     ) -> None:
         code = ["extensions = ['swagger_plugin_for_sphinx']"]
         if swagger_present_uri:
@@ -57,8 +58,9 @@ def sphinx_runner(tmp_path: Path) -> SphinxRunner:
         )
 
         spec = Path(__file__).parent / "openapi.yml"
-        shutil.copyfile(str(spec), str(docs / "openapi.yaml"))
-        shutil.copyfile(str(spec), str(docs / "other.yaml"))
+        content = spec.read_text(encoding="utf-8") + spec_suffix
+        (docs / "openapi.yaml").write_text(content, encoding="utf-8")
+        (docs / "other.yaml").write_text(content, encoding="utf-8")
 
         Sphinx(
             srcdir=str(docs),
@@ -137,6 +139,20 @@ def test_inline(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
 
     assert (tmp_path / "build" / "_static" / "openapi.yaml").exists()
     assert (tmp_path / "build" / "_static" / "other.yaml").exists()
+
+
+def test_rebuild_updates_spec(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
+    contents = dedent("""
+    API
+    ===
+
+    .. swagger-plugin:: openapi.yaml
+    """)
+    sphinx_runner(directive=contents)
+    sphinx_runner(directive=contents, spec_suffix="# changed\n")
+
+    published = tmp_path / "build" / "_static" / "openapi.yaml"
+    assert published.read_text(encoding="utf-8").endswith("# changed\n")
 
 
 def test_swagger_options(sphinx_runner: SphinxRunner, tmp_path: Path) -> None:
