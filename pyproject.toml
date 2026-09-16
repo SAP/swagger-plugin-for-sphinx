@@ -4,7 +4,7 @@ requires = ["setuptools~=84.0", "setuptools-scm~=10.0"]
 
 [project]
 authors = [
-    {name = "Kai Harder", email = "kai.harder@sap.com"},
+    { name = "Kai Harder", email = "kai.harder@sap.com" },
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
