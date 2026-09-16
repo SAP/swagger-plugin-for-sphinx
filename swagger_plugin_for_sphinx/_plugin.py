@@ -105,7 +105,10 @@ class SwaggerPluginDirective(SphinxDirective):
         # Preserve the source directory structure to avoid name collisions.
         outfile = static_dir.joinpath(relpath)
         ensuredir(str(outfile.parent))
-        copyfile(str(spec), str(outfile))
+        # force=True, because copyfile refuses to overwrite an existing file
+        # with different content, which leaves a stale spec behind whenever the
+        # output directory is reused between builds.
+        copyfile(str(spec), str(outfile), force=True)
 
         if app.config.swagger_mirror_external_resources:
             for uri in (
