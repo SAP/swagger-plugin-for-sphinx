@@ -4,7 +4,7 @@ requires = ["setuptools~=84.0", "setuptools-scm~=10.0"]
 
 [project]
 authors = [
-    {name = "Kai Harder", email = "kai.harder@sap.com"},
+    { name = "Kai Harder", email = "kai.harder@sap.com" },
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -64,7 +64,7 @@ dev = [
     "yesqa==1.5.0",
     "types-PyYAML==6.0.12.20260906",
     "pyupgrade==3.21.2",
-    "toml-sort==0.24.4",
+    "toml-sort==0.25.0",
     "pylint-per-file-ignores==3.2.1",
     "uv==0.12.13",
     "towncrier==26.9.0",
