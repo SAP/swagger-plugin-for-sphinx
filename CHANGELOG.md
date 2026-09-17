@@ -2,6 +2,13 @@
 
 <!-- towncrier release notes start -->
 
+## 7.3.0 (2026-09-17)
+
+### Fixes
+
+- The spec copied into `_static` is now overwritten on every build, instead of keeping the content of the first build (#625)
+
+
 ## 7.2.1 (2026-06-01)
 
 ### Fixes

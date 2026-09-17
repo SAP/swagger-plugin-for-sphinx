@@ -1,1 +1,0 @@
-The spec copied into `_static` is now overwritten on every build, instead of keeping the content of the first build
