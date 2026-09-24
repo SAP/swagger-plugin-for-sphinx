@@ -2,6 +2,14 @@
 
 <!-- towncrier release notes start -->
 
+## 8.0.0 (2026-09-24)
+
+### Removals
+
+- Removed support for python 3.10
+- Removed support for sphinx 8
+
+
 ## 7.3.0 (2026-09-17)
 
 ### Fixes
