@@ -55,7 +55,7 @@ dev = [
     "pre-commit==4.6.2",
     "pylint==4.0.9",
     "black==26.5.1",
-    "isort==9.0.1",
+    "isort==9.0.2",
     "flake8==7.4.1",
     "flake8-tergeo==26.9.24.0",
     "mypy==2.3.1",
