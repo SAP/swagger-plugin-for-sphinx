@@ -78,7 +78,7 @@ If you put more than one `swagger-plugin` directive in a file, specify unique ID
 This project uses [`uv`](https://docs.astral.sh/uv/).
 To install uv, and setup a venv for development, use:
 ```
-python3.14 -m venv venv && \
+python3.15 -m venv venv && \
     source venv/bin/activate && \
     pip install uv && uv sync --all-groups && \
     deactivate  && \
