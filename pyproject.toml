@@ -75,7 +75,7 @@ test = [
     "diff-cover==11.0.4",
     "pytest-cov==7.1.0",
     "selenium==4.53.0",
-    "pyyaml==6.0.3",
+    "pyyaml==6.0.4",
     "pytest-randomly==5.1.0",
 ]
 
